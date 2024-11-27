@@ -1,0 +1,25 @@
+import React from "react";
+import type { AppProps } from "next/app";
+
+import { NoSSR } from "components/NoSSR";
+import { LayoutContainer } from "containers/Layout";
+// import { ToastContainer } from "stores/ToastStore/ToastContainer";
+import { AppStoreProvider } from "stores/use_store";
+
+import "styles/globals.css";
+import { AuthProvider } from "lib/auth_provider";
+
+export default function App({ Component, pageProps }: AppProps) {
+  return (
+    <NoSSR>
+      <AppStoreProvider>
+        <AuthProvider>
+          <LayoutContainer>
+            <Component {...pageProps} />
+          </LayoutContainer>
+          {/* <ToastContainer /> */}
+        </AuthProvider>
+      </AppStoreProvider>
+    </NoSSR>
+  );
+}

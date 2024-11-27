@@ -1,0 +1,59 @@
+name: Test, Build, Publish and Deploy
+
+on:
+  workflow_run:
+    workflows: ["Test"]
+    types: [completed]
+    branches:
+      - master
+
+jobs:
+  publish: 
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    name: Publish Docker Image
+    runs-on: ubuntu-latest
+    env:
+      ORG_NAME: careerhubllc
+      IMAGE_NAME: frontend
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Login to Github Packages
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.GH_USERNAME }}
+          password: ${{ secrets.GH_PAT }}
+
+      - name: Build image and push it to the GitHub Container Registry
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: Docker/prod/Dockerfile
+          tags: |
+            ghcr.io/${{env.ORG_NAME}}/${{env.ORG_NAME}}/${{env.IMAGE_NAME}}:${{ github.sha }}
+          push: true
+
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    needs: [publish]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: 'CareerHubLLC/infrastructure'
+          token: ${{ secrets.GH_PAT }}
+          ref: master
+      - name: Play Ansible Deploy Playbook
+        uses: arillso/action.playbook@master
+        with:
+          galaxy_file: requirements.yml
+          inventory: hosts.yml
+          extra_vars: "SHA=${{ github.sha }} SERVICES=careerhub_frontend"
+          private_key: ${{ secrets.ANSIBLE_SSH_KEY }}
+          vault_password: ${{ secrets.ANSIBLE_VAULT_PASS }}
+          verbose: 2
+          playbook: deploy.yml

@@ -1,0 +1,10 @@
+.sider {
+  background: transparent !important;
+  min-width: 350px !important;
+  max-width: 350px !important;
+  padding: 24px !important;
+}
+
+.salary_input {
+  width: 140px !important;
+}

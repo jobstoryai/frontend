@@ -1,0 +1,30 @@
+.admin {
+  color: #FFF !important;
+  float: right;
+  margin-left: 12px;
+}
+
+.admin_button {
+  color: #FFF !important;
+}
+
+.admin_button:hover {
+  opacity: 0.75
+}
+
+.logo {
+  color: #FFF !important;
+  margin: 16px 0 0 -24px;
+  float: left;
+}
+
+.avatar {
+  float: right;
+  margin-top: 16px !important;
+}
+
+.username {
+  float: right;
+  color: white;
+  margin-left: 12px;
+}
