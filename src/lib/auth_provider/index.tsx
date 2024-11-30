@@ -7,8 +7,10 @@ import React, {
 } from "react";
 import { observer } from "mobx-react";
 import { useStore } from "stores/use_store";
-import { keycloak } from "./keycloak";
-import { ReactKeycloakProvider, useKeycloak } from "@react-keycloak/web";
+import { getLogger } from "lib/logger";
+import Keycloak from "keycloak-js";
+
+const log = getLogger(["providers", "AuthProvider"]);
 
 const AuthContext = createContext<{
   login: () => Promise<void>;
@@ -30,124 +32,76 @@ interface Props {
   children: ReactNode;
 }
 
+const keycloak = new Keycloak({
+  url: "http://localhost:8100",
+  realm: "jobstory",
+  clientId: "jobstory-frontend",
+  checkLoginIframe: false,
+});
+
 export const AuthProvider = observer(({ children }: Props) => {
+  const [isReady, setIsReady] = useState(false);
   const { authStore } = useStore();
   const tokens = authStore.tokens;
 
-  console.log("tokens", tokens);
-  console.log("authStore", authStore.isReady);
+  useEffect(() => {
+    if (!authStore.isReady) {
+      return;
+    }
 
-  //if (!authStore.isReady) {
-  //  return "Loading";
-  //}
-  //
-  return (
-    <ReactKeycloakProvider
-      authClient={keycloak}
-      initOptions={{
-        token: tokens?.accessToken,
-        refreshToken: tokens?.refreshToken,
-        checkLoginIframe: false,
-      }}
-    >
-      <AuthInternalProvider>{children}</AuthInternalProvider>
-    </ReactKeycloakProvider>
-  );
-});
+    const config = {
+      token: tokens?.accessToken,
+      refreshToken: tokens?.refreshToken,
+      checkLoginIframe: false,
+    };
 
-interface AuthInternalProviderProps {
-  children: ReactNode;
-}
+    log(
+      `Initialize keycloak with config ${JSON.stringify(
+        {
+          ...config,
+          token: tokens?.accessToken
+            ? `${tokens.accessToken.slice(0, 10)}...${tokens.accessToken.slice(-10)}`
+            : null,
+          refreshToken: tokens?.refreshToken
+            ? `${tokens.refreshToken.slice(0, 10)}...${tokens.refreshToken.slice(-10)}`
+            : undefined,
+        },
+        null,
+        2,
+      )}`,
+    );
 
-const AuthInternalProvider = observer(
-  ({ children }: AuthInternalProviderProps) => {
-    const { keycloak, initialized } = useKeycloak();
-    const { authStore } = useStore();
-
-    useEffect(() => {
-      if (keycloak.token) {
+    keycloak.init(config).then(() => {
+      if (keycloak.token && keycloak.refreshToken) {
+        log(`Received tokens ${JSON.stringify(
+          {
+            accessToken: `${keycloak.token.slice(0, 10)}...${keycloak.token.slice(-10)}`,
+            refreshToken: `${keycloak.refreshToken.slice(0, 10)}...${keycloak.refreshToken.slice(-10)}`,
+          },
+          null,
+          2,
+        )}
+        `);
         authStore.setTokens({
           accessToken: keycloak.token,
           refreshToken: keycloak.refreshToken,
         });
       }
-    }, [keycloak.token]);
+      setIsReady(true);
+    });
+  }, [authStore.isReady]);
 
-    return (
-      <AuthContext.Provider
-        value={{
-          login: keycloak.login,
-          logout: keycloak.logout,
-          token: keycloak.token,
-          refreshToken: keycloak.refreshToken,
-          isReady: initialized,
-        }}
-      >
-        {children}
-      </AuthContext.Provider>
-    );
-  },
-);
-
-//export const AuthProvider = observer(({ children, onReady }: Props) => {
-//  //const [isReady, setIsReady] = useState(false);
-//  //const { authStore } = useStore();
-//  //useEffect(() => {
-//  //  authStore.setTokenExpiredCallback(logout);
-//  //
-//  //  (async () => {
-//  //    try {
-//  //      const authenticated = await keycloak.init({
-//  //        onLoad: "check-sso",
-//  //        silentCheckSsoRedirectUri:
-//  //          window.location.origin + "/silent-check-sso.html",
-//  //      });
-//  //
-//  //      if (authenticated) {
-//  //        authStore.setAccessToken(keycloak.token || "");
-//  //        keycloak.onTokenExpired = async () => {
-//  //          try {
-//  //            await keycloak.updateToken(30); // Refresh token if it will expire in 30 seconds
-//  //            authStore.setAccessToken(keycloak.token || "");
-//  //          } catch {
-//  //            await logout();
-//  //          }
-//  //        };
-//  //      }
-//  //    } catch (error) {
-//  //      console.error("Keycloak initialization failed", error);
-//  //    } finally {
-//  //      setIsReady(true);
-//  //      onReady?.();
-//  //    }
-//  //  })();
-//  //}, [onReady]);
-//  //
-//  //const login = async () => {
-//  //  try {
-//  //    await keycloak.login();
-//  //    if (keycloak.token) {
-//  //      authStore.setAccessToken(keycloak.token);
-//  //    }
-//  //  } catch (error) {
-//  //    console.error("Keycloak login failed", error);
-//  //  }
-//  //};
-//
-//  //const logout = async () => {
-//  //  try {
-//  //    await keycloak.logout();
-//  //    //authStore.clearToken();
-//  //  } catch (error) {
-//  //    console.error("Keycloak logout failed", error);
-//  //  }
-//  //};
-//
-//  const { authStore } = useStore();
-//
-//  return (
-//    <AuthContext.Provider value={{ login, logout, isReady }}>
-//      {children}
-//    </AuthContext.Provider>
-//  );
-//});
+  return (
+    <AuthContext.Provider
+      value={{
+        login: keycloak.login,
+        logout: keycloak.logout,
+        token: keycloak.token,
+        refreshToken: keycloak.refreshToken,
+        isReady,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+});

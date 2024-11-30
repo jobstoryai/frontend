@@ -7,7 +7,11 @@ const UserInfo = observer(() => {
   //const appStore = useStore()
   const auth = useAuth();
 
-  if (auth.isReady && !auth.token) {
+  if (!auth.isReady) {
+    return "Loading";
+  }
+
+  if (!auth.token) {
     return <button onClick={() => auth.login()}>Login</button>;
   }
 

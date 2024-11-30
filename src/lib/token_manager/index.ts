@@ -41,7 +41,7 @@ export class TokenManager {
   constructor({
     accessTokenKey = "__at",
     refreshTokenKey = "__rt",
-    storageManager = new LocalStorageManager(),
+    storageManager = LocalStorageManager,
     eventEmitter = new EventEmitter(),
   }: Options = {}) {
     this.storageManager = storageManager;
@@ -70,7 +70,6 @@ export class TokenManager {
   }
 
   public setTokens({ accessToken, refreshToken }: Tokens) {
-    debugger;
     if (
       this.tokens?.accessToken === accessToken &&
       this.tokens?.refreshToken === refreshToken

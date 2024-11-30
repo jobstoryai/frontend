@@ -1,13 +1,13 @@
 export class LocalStorageManager {
-  get(key: string) {
+  static get(key: string) {
     return localStorage.getItem(key);
   }
 
-  set(key: string, value: string) {
+  static set(key: string, value: string) {
     localStorage.setItem(key, value);
   }
 
-  remove(key: string) {
+  static remove(key: string) {
     localStorage.removeItem(key);
   }
 }

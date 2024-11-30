@@ -1,4 +1,4 @@
-import { makeAutoObservable, runInAction } from "mobx";
+import { makeAutoObservable } from "mobx";
 import { getLogger } from "lib/logger";
 import { AppStore } from "./app_store";
 import { TokenManager } from "lib/token_manager";
@@ -21,7 +21,7 @@ export class AuthStore {
   isReady = false;
 
   constructor({ appStore }: Props) {
-    log("Initialize AuthStore");
+    log("Initialize");
     makeAutoObservable(this);
 
     this.appStore = appStore;
@@ -34,7 +34,16 @@ export class AuthStore {
       })
       .onTokensSet((tokens) => {
         this.tokens = tokens;
-        log(`Token installed: ${JSON.stringify(this.tokens)}`);
+        log(
+          `Token installed: ${JSON.stringify(
+            {
+              accessToken: `${tokens.accessToken.slice(0, 10)}...${tokens.accessToken.slice(-10)}`,
+              refreshToken: `${tokens.refreshToken.slice(0, 10)}...${tokens.refreshToken.slice(-10)}`,
+            },
+            null,
+            2,
+          )}`,
+        );
         this.postLogin();
       })
       .onClear(() => {

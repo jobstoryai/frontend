@@ -5,19 +5,21 @@ import { destroyCookie, parseCookies } from "nookies";
 import { isServer } from "lib/isServer";
 
 import { ACCESS_TOKEN_COOKIE_NAME, REFRESH_TOKEN_COOKIE_NAME } from "config";
+import { LocalStorageManager } from "lib/token_manager/localstorage_manager";
 
 export class HTTPClient extends api.AxiosHTTPClient {
   getExtraHeaders() {
-    const { [ACCESS_TOKEN_COOKIE_NAME]: access } = parseCookies();
-    return { Authorization: `Bearer ${access}` };
+    // TODO: use config
+    const accessToken = LocalStorageManager.get("__at");
+    return { Authorization: `Bearer ${accessToken}` };
   }
 
   onUnauthenticate = () => {
-    destroyCookie(null, REFRESH_TOKEN_COOKIE_NAME);
-    destroyCookie(null, ACCESS_TOKEN_COOKIE_NAME);
+    LocalStorageManager.remove("__at");
+    LocalStorageManager.remove("__rt");
+
     if (!isServer() && window.location.pathname !== "/login") {
       Router.push("/login");
     }
   };
 }
-
