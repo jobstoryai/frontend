@@ -23,10 +23,9 @@ export const LayoutView = ({ children }: Props) => (
               padding: 24,
               margin: 0,
               minHeight: 280,
-              background: "#FFF",
+              background: "transparent",
             }}
           >
-            <Breadcrumbs style={{ marginBottom: 16 }} />
             {children}
           </Content>
         </Layout>

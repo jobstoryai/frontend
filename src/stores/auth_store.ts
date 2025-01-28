@@ -1,7 +1,8 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import { getLogger } from "lib/logger";
 import { AppStore } from "./app_store";
 import { TokenManager } from "lib/token_manager";
+import { PublicUser } from "repositories/user_repository";
 
 const log = getLogger(["stores", "AuthStore"]);
 
@@ -9,14 +10,10 @@ interface Props {
   appStore: AppStore;
 }
 
-interface Tokens {
-  accessToken: string;
-  refreshToken: string;
-}
-
 export class AuthStore {
   appStore: AppStore;
-  tokens: Tokens | null = null;
+  token: string | null = null;
+  user: PublicUser | null = null;
   tokenManager: TokenManager;
   isReady = false;
 
@@ -28,23 +25,9 @@ export class AuthStore {
     this.tokenManager = new TokenManager();
 
     this.tokenManager
-      .onTokensLoadFinished(() => {
-        log("Tokens manager initialized");
-        this.isReady = true;
-      })
-      .onTokensSet((tokens) => {
-        this.tokens = tokens;
-        log(
-          `Token installed: ${JSON.stringify(
-            {
-              accessToken: `${tokens.accessToken.slice(0, 10)}...${tokens.accessToken.slice(-10)}`,
-              refreshToken: `${tokens.refreshToken.slice(0, 10)}...${tokens.refreshToken.slice(-10)}`,
-            },
-            null,
-            2,
-          )}`,
-        );
-        this.postLogin();
+      .onTokenSet((token: string) => {
+        this.token = token;
+        log(`Token installed: ${token.slice(0, 20)}...`);
       })
       .onClear(() => {
         log("Token uninstalled");
@@ -57,27 +40,27 @@ export class AuthStore {
       .init();
   }
 
-  setTokens = ({
-    accessToken,
-    refreshToken,
-  }: {
-    accessToken: string;
-    refreshToken: string;
-  }) => {
-    this.tokenManager.setTokens({ accessToken, refreshToken });
+  setToken = (token: string) => {
+    this.tokenManager.setToken(token);
   };
 
   logout = () => {
-    this.tokenManager.clearTokens();
+    this.tokenManager.clearToken();
   };
 
-  /**
-   * Technically, keycloak adapter is responsible for refresh, but if it
-   * fails to refresh, accessToken can expire
-   */
   setTokenExpiredCallback(callback: () => void) {
     this.tokenManager.onExpire(callback);
   }
+
+  pullUser = async () => {
+    const { repos } = this.appStore;
+
+    const user = await repos.users.get("me" as any);
+    runInAction(() => {
+      this.user = user;
+      console.log(this.user);
+    });
+  };
 
   private async postLogin() {
     log("Login is not implemented");

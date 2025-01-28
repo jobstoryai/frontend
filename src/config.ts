@@ -1,8 +1,9 @@
 import { isServer } from "lib/isServer";
 
 export const PROJECT_NAME = "JobStory";
-export const ACCESS_TOKEN_COOKIE_NAME = "__CH_AT__";
-export const REFRESH_TOKEN_COOKIE_NAME = "__CH_RT__";
+export const ACCESS_TOKEN_STORAGE_KEY = "__at";
+//export const ACCESS_TOKEN_COOKIE_NAME = "__CH_AT__";
+//export const REFRESH_TOKEN_COOKIE_NAME = "__CH_RT__";
 export const PAGE_SIZE = 20;
 
 export const BASE_URL = isServer()

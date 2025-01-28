@@ -1,7 +1,8 @@
 import { getLogger } from "lib/logger";
 import jwtDecode from "jwt-decode";
 import { EventEmitter } from "events";
-import { LocalStorageManager } from "./localstorage_manager";
+import { TokenStore } from "./token_store";
+import { MayBeAsync } from "types";
 
 const log = getLogger(["TokenManager"]);
 
@@ -9,140 +10,116 @@ const EVENTS = {
   TOKEN_CLEAR: "TOKEN_CLEAR",
   TOKEN_EXPIRED: "TOKEN_EXPIRED",
   TOKEN_SET: "TOKEN_SET",
-  TOKEN_MANAGER_INITIALIZED: "TOKEN_MANAGER_INITIALIZED",
 };
 
-interface StorageManager {
-  get(key: string): string | null;
-  set(key: string, value: string): void;
-  remove(key: string): void;
+interface ITokenStore {
+  get(): string | null;
+  set(value: string | null): void;
+  remove(): void;
 }
 
 interface Options {
-  storageManager?: StorageManager;
+  tokenStore?: ITokenStore;
   eventEmitter?: EventEmitter;
   accessTokenKey?: string;
   refreshTokenKey?: string;
 }
 
-interface Tokens {
-  accessToken: string;
-  refreshToken: string;
-}
-
 export class TokenManager {
-  public tokens: Tokens | null = null;
+  private token: string | null = null;
   private tokenExpirationTimer: NodeJS.Timeout | null = null;
-  private storageManager: StorageManager;
+  private tokenStore: ITokenStore;
   private emitter: EventEmitter;
-  private accessTokenKey: string;
-  private refreshTokenKey: string;
 
   constructor({
-    accessTokenKey = "__at",
-    refreshTokenKey = "__rt",
-    storageManager = LocalStorageManager,
+    tokenStore = new TokenStore(),
     eventEmitter = new EventEmitter(),
   }: Options = {}) {
-    this.storageManager = storageManager;
+    this.tokenStore = tokenStore;
     this.emitter = eventEmitter;
-    this.accessTokenKey = accessTokenKey;
-    this.refreshTokenKey = refreshTokenKey;
   }
 
   public init = () => {
     this.loadTokenFromStorage();
     log("Token manager initialized");
-    this.emitter.emit(EVENTS.TOKEN_MANAGER_INITIALIZED);
   };
 
   private loadTokenFromStorage() {
     log("Looking for previous token");
-    const accessToken = this.storageManager.get(this.accessTokenKey);
-    const refreshToken = this.storageManager.get(this.refreshTokenKey);
+    const accessToken = this.tokenStore.get();
 
-    if (accessToken && refreshToken) {
-      log("Previously saved tokens has been found");
-      this.setTokens({ accessToken, refreshToken });
+    if (accessToken) {
+      log(`Previously saved token has been found ${accessToken}`);
+
+      if (this.isTokenExpired(accessToken)) {
+        log("Previously saved token has been expired");
+        this.emitter.emit(EVENTS.TOKEN_EXPIRED);
+        return;
+      }
+
+      this.setToken(accessToken);
     } else {
-      log("Previously saved tokens hasn't been found");
+      log("Previously saved token not found");
     }
   }
 
-  public setTokens({ accessToken, refreshToken }: Tokens) {
-    if (
-      this.tokens?.accessToken === accessToken &&
-      this.tokens?.refreshToken === refreshToken
-    ) {
-      return;
-    }
+  public setToken(accessToken: string | null) {
+    this.tokenStore.set(accessToken);
+    this.token = accessToken;
+    log(`Token has been set ${accessToken?.slice(0, 20)}...`);
 
-    this.tokens = { accessToken, refreshToken };
-
-    this.storageManager.set(this.accessTokenKey, accessToken);
-    this.storageManager.set(this.refreshTokenKey, refreshToken);
-
-    log("Tokens have been set");
-
-    this.emitter.emit(EVENTS.TOKEN_SET, this.tokens);
+    this.emitter.emit(EVENTS.TOKEN_SET, this.token);
     this.tick();
   }
 
-  public getTokens() {
-    if (!this.tokens) {
-      return null;
-    }
-    if (this.isTokenExpired()) {
-      this.clearTokens();
-      this.emitter.emit(EVENTS.TOKEN_EXPIRED);
-      return null;
-    }
-    return this.tokens;
+  public getToken() {
+    return this.token;
   }
 
-  public clearTokens(silent = false) {
-    this.tokens = null;
+  public clearToken(silent = false) {
+    this.token = null;
 
-    this.storageManager.remove(this.accessTokenKey);
-    this.storageManager.remove(this.refreshTokenKey);
+    this.tokenStore.remove();
 
     if (!silent) {
       this.emitter.emit(EVENTS.TOKEN_CLEAR);
-      log("Tokens have been cleared silently");
+      log("Token has been cleared");
+    } else {
+      log("Token has been cleared silently");
     }
+
     if (this.tokenExpirationTimer) {
       clearTimeout(this.tokenExpirationTimer);
-      log("Tokens have been cleared");
     }
   }
 
   private tick() {
-    if (!this.tokens) {
-      return;
-    }
-
-    const decodedToken: any = jwtDecode(this.tokens.accessToken);
-    const expirationTime = decodedToken.exp * 1000 - Date.now();
-
     if (this.tokenExpirationTimer) {
       clearTimeout(this.tokenExpirationTimer);
     }
 
+    if (!this.token) {
+      return;
+    }
+
+    const decodedToken: any = jwtDecode(this.token);
+    const expirationTime = decodedToken.exp * 1000 - Date.now();
+
     if (expirationTime <= 0) {
       log("Token has been expired");
-      this.clearTokens();
+      this.clearToken();
       this.emitter.emit(EVENTS.TOKEN_EXPIRED);
     } else {
       this.tokenExpirationTimer = setTimeout(() => {
-        this.clearTokens();
+        this.clearToken();
         this.emitter.emit(EVENTS.TOKEN_EXPIRED);
       }, expirationTime);
     }
   }
 
-  public isTokenExpired() {
-    if (!this.tokens) return true;
-    const decodedToken: any = jwtDecode(this.tokens.accessToken);
+  public isTokenExpired(token: string) {
+    if (!token) return true;
+    const decodedToken: any = jwtDecode(token);
     return decodedToken.exp * 1000 < Date.now();
   }
 
@@ -156,14 +133,8 @@ export class TokenManager {
     return this;
   }
 
-  public onTokensSet(callback: (tokens: Tokens) => void) {
+  public onTokenSet(callback: (token: string) => MayBeAsync<void>) {
     this.emitter.on(EVENTS.TOKEN_SET, callback);
-    return this;
-  }
-
-  public onTokensLoadFinished(callback: () => void) {
-    console.log(callback);
-    this.emitter.on(EVENTS.TOKEN_MANAGER_INITIALIZED, callback);
     return this;
   }
 }

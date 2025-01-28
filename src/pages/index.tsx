@@ -1,10 +1,14 @@
-import React from 'react';
-//import { AuthContainer } from 'containers/Auth';
-//import { UserPageContainer } from 'containers/UserPage';
-import { LoginPageTemporaryContainer } from 'containers/LoginPageTemporary';
+import React from "react";
+import { LoginPageContainer } from "containers/LoginPage";
+import { AuthContainer } from "containers/Auth";
 
 const Page = () => (
-  <LoginPageTemporaryContainer />
+  <AuthContainer
+    redirectUnauthenticated="/login"
+    redirectAuthenticated="/profile"
+  >
+    <LoginPageContainer />
+  </AuthContainer>
 );
 
 export default Page;

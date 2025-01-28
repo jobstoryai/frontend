@@ -1,12 +1,15 @@
 import { getLogger } from "lib/logger";
 import { makeAutoObservable } from "mobx";
 import { AuthStore } from "./auth_store";
+import { UserApiRepository } from "repositories/user_repository";
 
 const log = getLogger(["stores", "AppStore"]);
 
 export class AppStore {
   authStore: AuthStore;
-  repos: {};
+  repos: {
+    users: UserApiRepository;
+  };
 
   constructor() {
     log("initialize AppStore");
@@ -14,6 +17,8 @@ export class AppStore {
 
     this.authStore = new AuthStore({ appStore: this });
 
-    this.repos = {};
+    this.repos = {
+      users: new UserApiRepository(),
+    };
   }
 }

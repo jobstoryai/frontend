@@ -1,7 +1,7 @@
 import { makeAutoObservable } from "mobx";
 import Router from "next/router";
 
-import { AppStore } from "stores/AppStore";
+import { AppStore } from "stores/app_store";
 
 interface Opts {
   appStore: AppStore;
@@ -37,4 +37,3 @@ export class HeaderController {
     Router.push("/login");
   };
 }
-

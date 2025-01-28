@@ -1,11 +1,11 @@
 import React from "react";
 
 import { AuthContainer } from "containers/Auth";
-import { LoginPageContainer } from "containers/LoginPage";
+import { HomePageContainer } from "containers/HomePage";
 
 const Login = () => (
-  <AuthContainer redirectAuthenticated="/">
-    <LoginPageContainer />
+  <AuthContainer redirectUnauthenticated="/login">
+    <HomePageContainer />
   </AuthContainer>
 );
 

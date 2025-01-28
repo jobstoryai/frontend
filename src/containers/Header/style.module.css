@@ -19,12 +19,12 @@
 }
 
 .avatar {
-  float: right;
-  margin-top: 16px !important;
+  border: 2px solid #444;
+  box-shadow: 0 0 1px 0px rgba(255,255,255,.2);
+  margin-right: -24px;
 }
 
 .username {
-  float: right;
   color: white;
-  margin-left: 12px;
+  margin-right: 18px;
 }

@@ -1,30 +1,27 @@
 ---
-to: src/containers/<%=name%>/<%=name%>Container.tsx
+to: src/containers/<%=name%>/index.tsx
 ---
 import React, { useEffect } from "react";
 import { observer } from "mobx-react-lite";
 
 import { useController } from "lib/useController";
 
-import { <%=name%>View } from "./<%=name%>View";
-import { <%=name%>Controller } from "./<%=name%>Controller";
+import { <%=name%>View } from "./view";
+import { <%=name%>Controller } from "./controller";
 
-export interface Props {
-  id: number;
-  // TODO: Add container props here
-}
+export interface Props {}
 
-export const <%=name%>Container = observer(({ id }: Props) => {
-  const instance<%=name%>Controller = useController(<%=name%>Controller, {});
+export const <%=name%>Container = observer(({}: Props) => {
+  const controller = useController(<%=name%>Controller, {});
 
   useEffect(() => {
-    instance<%=name%>Controller.load(id);
+    controller.load(1);
   }, []);
 
   return (
     <<%=name%>View 
-      isLoading={instance<%=name%>Controller.isLoading}
-      data={instance<%=name%>Controller.data}
+      isLoading={controller.isLoading}
+      data={controller.data}
     />
   );
 })

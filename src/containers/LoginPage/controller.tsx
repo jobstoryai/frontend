@@ -1,17 +1,15 @@
----
-to: src/containers/<%=name%>/controller.ts
----
 import { makeAutoObservable, runInAction } from "mobx";
-import { AppStore } from "stores/app_store";
+import { Node } from "repositories/NodeRepository";
+import { AppStore } from "stores/AppStore";
 
 interface Options {
   appStore: AppStore;
 }
 
-export class <%=name%>Controller {
+export class LoginPageController {
   private appStore: AppStore
   isLoading = false;
-  data: any | null = null;
+  data: Node | null = null;
 
   constructor(options: Options) {
     this.appStore = options.appStore;
@@ -21,8 +19,10 @@ export class <%=name%>Controller {
   async load(id: number) {
     const { repos } = this.appStore;
     this.isLoading = true;
+    const item = await repos.node.get(id);
 
     runInAction(() => {
+      this.data = item;
       this.isLoading = false;
     });
   }
