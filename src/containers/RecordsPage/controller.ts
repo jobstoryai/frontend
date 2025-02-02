@@ -1,6 +1,3 @@
----
-to: src/containers/<%= h.changeCase.snakeCase(name) %>/controller.ts
----
 import { makeAutoObservable, runInAction } from "mobx";
 import { AppStore } from "stores/app_store";
 
@@ -8,7 +5,7 @@ interface Options {
   appStore: AppStore;
 }
 
-export class <%=name%>Controller {
+export class RecordsPageController {
   private appStore: AppStore
   isLoading = false;
   data: any | null = null;

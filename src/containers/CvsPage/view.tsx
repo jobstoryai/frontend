@@ -1,6 +1,3 @@
----
-to: src/containers/<%= h.changeCase.snakeCase(name) %>/view.tsx
----
 import React, { FC } from "react";
 import { observer } from "mobx-react-lite";
 
@@ -10,8 +7,8 @@ interface Props {
   data: any; // TODO:
 }
 
-export const <%=name%>View = observer(({ data }: Props) => (
+export const CvsPageView = observer(({ data }: Props) => (
   <div>
-      <pre>{data}</pre>
+    <pre>CVs page is under development</pre>
   </div>
 ));

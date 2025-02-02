@@ -1,13 +1,19 @@
 import React from "react";
 import { DownOutlined, LogoutOutlined } from "@ant-design/icons";
-import { Avatar, Dropdown, MenuProps, Space } from "antd";
+import { Avatar, Dropdown, Flex, MenuProps, Space } from "antd";
 import Title from "antd/lib/typography/Title";
 import { observer } from "mobx-react-lite";
 import Link from "next/link";
+import {
+  BookFilled,
+  SettingFilled,
+  StarFilled,
+  FundFilled,
+} from "@ant-design/icons";
 
 import { NoSSR } from "components/NoSSR";
 
-import s from "./style.module.css";
+import s from "./styles.module.css";
 import { PROJECT_NAME } from "config";
 
 interface Props {
@@ -28,51 +34,68 @@ const dropdownItems: MenuProps["items"] = [
 }));
 
 export const HeaderView = observer(({ user, isLoading, onLogout }: Props) => (
-  <>
-    <Link href="/">
-      <Title className={s.logo} level={4}>
-        {PROJECT_NAME}
-      </Title>
-    </Link>
-    <NoSSR>
-      <Space direction="horizontal" style={{ float: "right" }}>
-        {/* <Link className={s.admin} href="/search">
-          <Button type="text" className={s.admin_button}>
-            Search
-          </Button>
+  <Flex>
+    <Flex style={{ flexGrow: 1 }}>
+      <Flex justify="flex-start" align="center">
+        <Link
+          style={{
+            flexGrow: 1,
+            display: "flex",
+            paddingTop: 6,
+          }}
+          href="/"
+        >
+          <Title className={s.logo} level={4}>
+            {PROJECT_NAME}
+          </Title>
         </Link>
-        <Link className={s.admin} href="/admin">
-          <Button type="text" className={s.admin_button}>
-            Admin
-          </Button>
-        </Link> */}
-        {isLoading ? null : user ? (
-          <>
-            <Dropdown
-              arrow
-              className={s.username}
-              menu={{
-                onClick: ({ key }) => {
-                  if (key === "logout") {
-                    onLogout();
-                  }
-                },
-                items: dropdownItems,
-              }}
-            >
-              <a onClick={(e) => e.preventDefault()}>
-                <Space>
-                  {user.username}
-                  <DownOutlined />
-                </Space>
-              </a>
-            </Dropdown>
-            <Avatar className={s.avatar}>
-              {user.username[0].toUpperCase()}
-            </Avatar>
-          </>
-        ) : null}
-      </Space>
-    </NoSSR>
-  </>
+        <NoSSR>
+          <Link className={s.link} href="/records">
+            <StarFilled style={{ marginRight: 6 }} />
+            Records
+          </Link>
+          <Link className={s.link} href="/cvs">
+            <BookFilled style={{ marginRight: 6 }} />
+            CVs
+          </Link>
+          <Link className={s.link} href="/tracking">
+            <FundFilled style={{ marginRight: 6 }} />
+            Tracking
+          </Link>
+          <Link className={s.link} href="/settings">
+            <SettingFilled style={{ marginRight: 6 }} />
+            Settings
+          </Link>
+        </NoSSR>
+      </Flex>
+    </Flex>
+    <Flex style={{ flexGrow: 1 }} align="center" justify="flex-end">
+      <NoSSR>
+        <Space direction="horizontal">
+          {isLoading ? null : user ? (
+            <>
+              <Dropdown
+                arrow
+                menu={{
+                  onClick: ({ key }) => {
+                    if (key === "logout") {
+                      onLogout();
+                    }
+                  },
+                  items: dropdownItems,
+                }}
+              >
+                <a onClick={(e) => e.preventDefault()}>
+                  <span className={s.username}>{user.email}</span>
+                  <Avatar className={s.avatar}>
+                    {user.username[0].toUpperCase()}
+                  </Avatar>
+                </a>
+              </Dropdown>
+            </>
+          ) : null}
+        </Space>
+      </NoSSR>
+    </Flex>
+  </Flex>
 ));

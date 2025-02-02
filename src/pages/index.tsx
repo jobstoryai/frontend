@@ -5,10 +5,8 @@ import { AuthContainer } from "containers/Auth";
 const Page = () => (
   <AuthContainer
     redirectUnauthenticated="/login"
-    redirectAuthenticated="/profile"
-  >
-    <LoginPageContainer />
-  </AuthContainer>
+    redirectAuthenticated="/records"
+  />
 );
 
 export default Page;

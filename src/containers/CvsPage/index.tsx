@@ -1,25 +1,22 @@
----
-to: src/containers/<%= h.changeCase.snakeCase(name) %>/index.tsx
----
 import React, { useEffect } from "react";
 import { observer } from "mobx-react-lite";
 
 import { useController } from "lib/useController";
 
-import { <%=name%>View } from "./view";
-import { <%=name%>Controller } from "./controller";
+import { CvsPageView } from "./view";
+import { CvsPageController } from "./controller";
 
 export interface Props {}
 
-export const <%=name%>Container = observer(({}: Props) => {
-  const controller = useController(<%=name%>Controller, {});
+export const CvsPageContainer = observer(({}: Props) => {
+  const controller = useController(CvsPageController, {});
 
   useEffect(() => {
     controller.load(1);
   }, []);
 
   return (
-    <<%=name%>View 
+    <CvsPageView 
       isLoading={controller.isLoading}
       data={controller.data}
     />

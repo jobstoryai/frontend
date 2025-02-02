@@ -1,17 +1,4 @@
-import React, { useState } from "react";
-import { observer } from "mobx-react-lite";
-import { PublicUser } from "repositories/user_repository";
-import { Typography, Row } from "antd";
-import { UserHeader } from "components/UserHeader";
-import { RecordCard } from "components/RecordCard";
-import { BookFilled, SettingFilled, StarFilled } from "@ant-design/icons";
-
-interface Props {
-  isLoading: boolean;
-  user: PublicUser;
-}
-
-const records = [
+export const recordsMock = [
   {
     title: "Updated React Version",
     job: "Facebook, Meta Inc.",
@@ -48,28 +35,3 @@ const records = [
     tags: ["frontend", "ui-design"],
   },
 ];
-
-export const HomePageView = observer(({ user }: Props) => {
-  return (
-    <div
-      style={{
-        alignItems: "center",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      <div
-        style={{
-          alignItems: "center",
-          display: "flex",
-          flexDirection: "column",
-          maxWidth: 800,
-        }}
-      >
-        {records.map((record) => (
-          <RecordCard record={record} />
-        ))}
-      </div>
-    </div>
-  );
-});
