@@ -1,0 +1,13 @@
+.item {
+}
+
+.item_inner,
+.dropdown {
+  cursor: pointer;
+}
+
+.item_inner:hover,
+.dropdown:hover {
+  opacity: 0.6;
+}
+

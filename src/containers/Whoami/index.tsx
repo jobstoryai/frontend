@@ -1,9 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { observer } from "mobx-react-lite";
 
-import { useController } from "lib/useController";
 
 import { WhoamiView } from "./view";
+
+import { useController } from "lib/use_controller";
 import { AuthController } from "controllers/auth_controller";
 
 export interface Props {}

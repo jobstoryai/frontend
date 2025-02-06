@@ -1,7 +1,65 @@
 {
   "extends": "next/core-web-vitals",
+  "plugins": [
+    "simple-import-sort"
+  ],
   "rules": {
-    "react/display-name": [0]
-
+    "react/display-name": [
+      0
+    ],
+    "no-restricted-imports": [
+      "warn",
+      {
+        "patterns": [
+          {
+            "group": [
+              "(components|containers|controllers|lib|pages|providers|repositories|stores|utils|types)/*[A-Z]*"
+            ],
+            "caseSensitive": true,
+            "message": "Using uppercase letters in imports is not allowed"
+          }
+        ]
+      }
+    ],
+    "simple-import-sort/imports": [
+      "error",
+      {
+        "groups": [
+          [
+            "^react",
+            "^@?\\w"
+          ],
+          [
+            "^components(/.*|$)",
+            "^containers(/.*|$)",
+            "^stores(/.*|$)",
+            "^lib(/.*|$)",
+            "^repositories(/.*|$)",
+            "^__stubs(/.*|$)"
+          ],
+          [
+            "^config(/.*|$)"
+          ],
+          [
+            "^types(.*|$)"
+          ],
+          [
+            "^\\.\\.(?!/?$)",
+            "^\\.\\./?$"
+          ],
+          [
+            "^\\./(?=.*/)(?!/?$)",
+            "^\\.(?!/?$)",
+            "^\\./?$"
+          ],
+          [
+            "^\\u0000"
+          ],
+          [
+            "^.+\\.?(css)$"
+          ]
+        ]
+      }
+    ]
   }
 }

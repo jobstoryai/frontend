@@ -1,6 +1,4 @@
-import { isServer } from "lib/isServer";
 import { makeAutoObservable } from "mobx";
-import Router from "next/router";
 import { AppStore } from "stores/app_store";
 
 interface Options {

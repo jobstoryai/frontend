@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { observer } from "mobx-react-lite";
 
-import { useController } from "lib/useController";
+import { useController } from "lib/use_controller";
 
 import { RecordFormView } from "./view";
 import { RecordFormController } from "./controller";

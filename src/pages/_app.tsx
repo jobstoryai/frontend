@@ -3,11 +3,11 @@ import type { AppProps } from "next/app";
 
 import { NoSSR } from "components/NoSSR";
 import { LayoutContainer } from "containers/Layout";
-// import { ToastContainer } from "stores/ToastStore/ToastContainer";
+import { ToastContainer } from "stores/toast_store/toast_container";
 import { AppStoreProvider } from "stores/use_store";
+import { AuthProvider } from "lib/auth_provider";
 
 import "styles/globals.css";
-import { AuthProvider } from "lib/auth_provider";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -17,7 +17,7 @@ export default function App({ Component, pageProps }: AppProps) {
           <LayoutContainer>
             <Component {...pageProps} />
           </LayoutContainer>
-          {/* <ToastContainer /> */}
+          <ToastContainer />
         </AuthProvider>
       </AppStoreProvider>
     </NoSSR>

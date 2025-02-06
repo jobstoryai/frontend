@@ -1,6 +1,5 @@
 import React from "react";
-import { LoginPageContainer } from "containers/LoginPage";
-import { AuthContainer } from "containers/Auth";
+import { AuthContainer } from "containers/auth";
 
 const Page = () => (
   <AuthContainer

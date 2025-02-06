@@ -1,7 +1,7 @@
 import React from "react";
 
-import { AuthContainer } from "containers/Auth";
-import { TrackingPageContainer } from "containers/TrackingPage";
+import { AuthContainer } from "containers/auth";
+import { TrackingPageContainer } from "containers/tracking_page";
 
 const Page = () => (
   <AuthContainer redirectUnauthenticated="/login">

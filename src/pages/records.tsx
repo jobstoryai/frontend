@@ -1,7 +1,7 @@
 import React from "react";
 
-import { AuthContainer } from "containers/Auth";
-import { RecordsPageContainer } from "containers/RecordsPage";
+import { AuthContainer } from "containers/auth";
+import { RecordsPageContainer } from "containers/records_page";
 
 const Page = () => (
   <AuthContainer redirectUnauthenticated="/login">

@@ -1,7 +1,7 @@
 import React from "react";
 import { observer } from "mobx-react-lite";
 
-import { useController } from "lib/useController";
+import { useController } from "lib/use_controller";
 
 import { HeaderView } from "./view";
 import { AuthController } from "controllers/auth_controller";

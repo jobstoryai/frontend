@@ -1,25 +1,22 @@
----
-to: src/containers/<%= h.changeCase.snakeCase(name) %>/index.tsx
----
 import React, { useEffect } from "react";
 import { observer } from "mobx-react-lite";
 
 import { useController } from "lib/use_controller";
 
-import { <%=name%>View } from "./view";
-import { <%=name%>Controller } from "./controller";
+import { TrackingPageView } from "./view";
+import { TrackingPageController } from "./controller";
 
 export interface Props {}
 
-export const <%=name%>Container = observer(({}: Props) => {
-  const controller = useController(<%=name%>Controller, {});
+export const TrackingPageContainer = observer(({}: Props) => {
+  const controller = useController(TrackingPageController, {});
 
   useEffect(() => {
     controller.load(1);
   }, []);
 
   return (
-    <<%=name%>View 
+    <TrackingPageView 
       isLoading={controller.isLoading}
       data={controller.data}
     />

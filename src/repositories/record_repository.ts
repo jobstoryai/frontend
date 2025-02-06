@@ -1,7 +1,9 @@
 import { repositories, serializers } from "client-rest-framework";
+
+import { GetDomainModel, GetRequestPayload } from "types";
+
 import { API } from "./apis/api";
-import { GetDomainModel, GetRequestPayload } from "_repositories/types";
-import { format } from "date-fns";
+import { DateOnlyField } from "./fields/date_only_field";
 
 export interface RecordDTO {
   id: number;
@@ -14,14 +16,6 @@ export interface RecordDTO {
 
 export type Record = GetDomainModel<RecordSerializer>;
 export type RecordPayload = GetRequestPayload<RecordSerializer>;
-
-export class DateOnlyField<
-  R extends boolean = false,
-  M extends boolean = false,
-> extends serializers.BaseSerializer<R, M> {
-  fromDTO = (data: string) => new Date(data);
-  toDTO = (data: Date) => format(new Date(data), "yyyy-MM-dd");
-}
 
 class RecordsAPI extends API<RecordDTO> {
   url = "/api/records";
