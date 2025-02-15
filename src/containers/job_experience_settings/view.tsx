@@ -7,7 +7,7 @@ interface Props {
   data: any; // TODO:
 }
 
-export const RecordsPageView = observer(({ data }: Props) => (
+export const JobExperienceSettingsView = observer(({ data }: Props) => (
   <div>
       <pre>{data}</pre>
   </div>

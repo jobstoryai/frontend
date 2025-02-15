@@ -1,8 +1,8 @@
 import React from "react";
 import { observer } from "mobx-react-lite";
 
-import { RecordsListContainer } from "containers/records_list";
 import { RecordFormContainer } from "containers/record_form";
+import { RecordsListContainer } from "containers/records_list";
 
 export interface Props {}
 
@@ -20,6 +20,7 @@ export const RecordsPageContainer = observer(({}: Props) => {
           alignItems: "center",
           display: "flex",
           flexDirection: "column",
+          width: "100%",
           maxWidth: 800,
         }}
       >

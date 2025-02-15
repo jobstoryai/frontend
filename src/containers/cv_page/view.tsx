@@ -1,11 +1,10 @@
 import React, { FC } from "react";
 import { DeleteOutlined } from "@ant-design/icons";
-import Icon from "@ant-design/icons/lib/components/Icon";
-import { Button, Card, Form, Input } from "antd";
+import { Button, Card, Form, Input, List } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { format } from "date-fns";
-import { omit } from "lodash";
 import { observer } from "mobx-react-lite";
+import Link from "next/link";
 
 import { Cv, CvPayload } from "repositories/cv_repository";
 
@@ -19,10 +18,20 @@ interface Props {
   isUpdating: boolean;
   onSubmit: (payload: CvPayload) => MayBeAsync<void>;
   onDelete: () => MayBeAsync<void>;
+  isCreatingVersion: boolean;
+  onCreateVersion: () => MayBeAsync<void>;
 }
 
 export const CvPageView = observer(
-  ({ data, isUpdating, onSubmit, onDelete, isNew }: Props) => {
+  ({
+    data,
+    isUpdating,
+    onSubmit,
+    onDelete,
+    isNew,
+    isCreatingVersion,
+    onCreateVersion,
+  }: Props) => {
     return (
       <div
         style={{
@@ -112,9 +121,34 @@ export const CvPageView = observer(
                 </Form.Item>
               ) : null}
 
+              {!isNew && data?.versions.length ? (
+                <Form.Item label="Versions">
+                  <List size="small" bordered>
+                    {data.versions.slice().reverse().map((version) => (
+                      <List.Item key={version.id}>
+                        <Link
+                          href={`/cvs/preview/${version.id}`}
+                          style={{ width: "100%" }}
+                        >
+                          {format(version.updated_at, "yyyy-MM-dd HH:mm")}
+                        </Link>
+                      </List.Item>
+                    ))}
+                  </List>
+                </Form.Item>
+              ) : null}
+
               <Form.Item label={null}>
-                <Button loading={isUpdating} type="primary" htmlType="submit">
+                <Button
+                  loading={isUpdating}
+                  type="primary"
+                  htmlType="submit"
+                  style={{ marginRight: 8 }}
+                >
                   {isNew ? "Create" : "Save"}
+                </Button>
+                <Button loading={isCreatingVersion} onClick={onCreateVersion}>
+                  Create Version
                 </Button>
               </Form.Item>
             </Form>

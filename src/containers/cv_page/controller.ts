@@ -2,7 +2,7 @@ import { makeAutoObservable, runInAction } from "mobx";
 import router from "next/router";
 
 import { AppStore } from "stores/app_store";
-import { Cv, CvPayload } from "repositories/cv_repository";
+import { Cv, CvPayload, CvsApiRepository } from "repositories/cv_repository";
 
 interface Options {
   appStore: AppStore;
@@ -12,6 +12,7 @@ export class CvPageController {
   private appStore: AppStore;
   isLoading = false;
   isUpdating = false;
+  isCreatingVersion = false;
   data: Cv | null = null;
 
   constructor(options: Options) {
@@ -102,6 +103,33 @@ export class CvPageController {
       toastStore.show("error", "Something went wrong");
     } finally {
       runInAction(() => {});
+    }
+  };
+
+  createVerion = async () => {
+    const {
+      repos,
+      stores: { toastStore },
+    } = this.appStore;
+    const id = this.data?.id;
+
+    if (!id) {
+      throw new Error("CV isn't fetched yet");
+    }
+
+    try {
+      this.isCreatingVersion = true;
+      await repos.cvVersions.create({ cv: id, is_active: false });
+      const updatedCv = await repos.cvs.get(id);
+      runInAction(() => {
+        this.data!.versions = updatedCv.versions;
+      });
+    } catch (e) {
+      console.error(e);
+    } finally {
+      runInAction(() => {
+        this.isCreatingVersion = false;
+      });
     }
   };
 }

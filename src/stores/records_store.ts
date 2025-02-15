@@ -1,7 +1,10 @@
-import { PAGE_SIZE } from "config";
 import { makeAutoObservable, runInAction } from "mobx";
-import { Record, RecordPayload } from "repositories/record_repository";
+
 import { AppStore } from "stores/app_store";
+import { Record, RecordPayload } from "repositories/record_repository";
+
+import { PAGE_SIZE } from "config";
+
 import { Paginated } from "types";
 
 interface Options {
@@ -70,13 +73,29 @@ export class RecordsStore {
     const { repos } = this.appStore;
 
     this.state.isCreating = true;
-    const res = await repos.records.create(payload);
-    console.log(res);
+    try {
+      const res = await repos.records.create(payload);
+
+      runInAction(() => {
+        this.data.count = this.data.count + 1;
+        this.data.items = [res, ...this.data.items];
+      });
+    } catch (e) {
+      console.log(e);
+    } finally {
+      runInAction(() => {
+        this.state.isCreating = false;
+      });
+    }
+  }
+
+  async delete(id: number) {
+    const { repos } = this.appStore;
+    await repos.records.delete(id);
 
     runInAction(() => {
       this.data.count = this.data.count + 1;
-      this.data.items = [res, ...this.data.items];
-      this.state.isCreating = false;
+      this.data.items = this.data.items.filter((i) => i.id !== id);
     });
   }
 }

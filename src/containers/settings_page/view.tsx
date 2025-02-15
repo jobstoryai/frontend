@@ -1,20 +1,24 @@
 import React from "react";
-import { Button, Card, Form, Typography } from "antd";
+import { EllipsisOutlined } from "@ant-design/icons";
+import { Button, Card, Form, List, Typography } from "antd";
 import TextArea, { TextAreaProps } from "antd/lib/input/TextArea";
+import { format } from "date-fns";
 import { observer } from "mobx-react-lite";
 
+import { Job } from "repositories/job_repository";
 import { UserSettings } from "repositories/user_settings";
 
-import { MAX_SYSTEM_PROMPT_LENGTH } from "config";
+import { MAX_USER_PROMPT_LENGTH } from "config";
 
 import { MayBeAsync } from "types";
 
 interface FormValues {
-  system_prompt: string;
+  user_prompt: string;
 }
 
 interface Props {
   isUpdating: boolean;
+  jobs: Job[];
   data: UserSettings;
   onSubmit: (payload: FormValues) => MayBeAsync<void>;
 }
@@ -24,7 +28,7 @@ const SystemPromptInput = (props: TextAreaProps) => (
     <TextArea
       rows={10}
       styles={{ textarea: { minHeight: 200 } }}
-      maxLength={MAX_SYSTEM_PROMPT_LENGTH}
+      maxLength={MAX_USER_PROMPT_LENGTH}
       showCount
       autoSize
       style={{ marginBottom: 20 }}
@@ -45,7 +49,7 @@ const SystemPromptInput = (props: TextAreaProps) => (
 );
 
 export const SettingsPageView = observer(
-  ({ isUpdating, data, onSubmit }: Props) => {
+  ({ isUpdating, data, onSubmit, jobs }: Props) => {
     const [form] = Form.useForm();
 
     return (
@@ -68,13 +72,42 @@ export const SettingsPageView = observer(
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 20 }}
             initialValues={{
-              system_prompt: data.system_prompt,
+              user_prompt: data.user_prompt,
             }}
             onFinish={onSubmit}
             autoComplete="off"
           >
-            <Form.Item name="system_prompt" label="System Prompt">
+            <Form.Item name="user_prompt" label="User Prompt">
               <SystemPromptInput />
+            </Form.Item>
+
+            <Form.Item label="Jobs">
+              <List>
+                {jobs.map((job) => (
+                  <List.Item key={job.id}>
+                    <Card
+                      style={{
+                        width: "100%",
+                        boxShadow: "0 0 3px rgba(0,0,0,.1)",
+                      }}
+                      title={`${job.position} @ ${job.company}`}
+                      extra={<EllipsisOutlined />}
+                    >
+                      <strong>Started:</strong>{" "}
+                      {format(job.started, "yyyy-MM-dd")}
+                      <br />
+                      <strong>Finished:</strong>{" "}
+                      {job.finished
+                        ? format(job.finished, "yyyy-MM-dd")
+                        : "Present"}
+                      <br />
+                      <Typography.Paragraph style={{ marginTop: 8 }}>
+                        {job.description}
+                      </Typography.Paragraph>
+                    </Card>
+                  </List.Item>
+                ))}
+              </List>
             </Form.Item>
 
             <Form.Item label={null}>

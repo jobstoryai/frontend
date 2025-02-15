@@ -26,6 +26,8 @@ export const CvPageContainer = observer(({ cvId }: Props) => {
 
   return (
     <CvPageView
+      isCreatingVersion={controller.isCreatingVersion}
+      onCreateVersion={controller.createVerion}
       isUpdating={controller.isUpdating}
       onSubmit={(payload) => {
         !!cvId ? controller.update(cvId, payload) : controller.create(payload);

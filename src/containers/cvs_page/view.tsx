@@ -18,6 +18,7 @@ interface Props {
   onDeactivate: (id: number) => MayBeAsync<void>;
   onCreate: () => MayBeAsync<void>;
 }
+
 export const CvsPageView = observer(
   ({ data, isLoading, onCreate, onEdit, onDeactivate, onDelete }: Props) => (
     <div

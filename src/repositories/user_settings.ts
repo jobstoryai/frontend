@@ -7,7 +7,7 @@ import { API } from "./apis/api";
 export interface UserSettingsDTO {
   id: number;
   user: number;
-  system_prompt: string;
+  user_prompt: string;
   created_at: string;
   updated_at: string;
 }
@@ -24,7 +24,7 @@ export class UserSettingsSerializer<
   M extends boolean = false,
 > extends serializers.ModelSerializer<UserSettingsDTO, R, M> {
   id = new serializers.NumberField({ readonly: true });
-  system_prompt = new serializers.StringField();
+  user_prompt = new serializers.StringField();
   created_at = new serializers.DateField({ readonly: true });
   updated_at = new serializers.DateField({ readonly: true });
 }

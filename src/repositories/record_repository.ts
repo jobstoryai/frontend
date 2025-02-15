@@ -4,6 +4,7 @@ import { GetDomainModel, GetRequestPayload } from "types";
 
 import { API } from "./apis/api";
 import { DateOnlyField } from "./fields/date_only_field";
+import { Job, JobDTO, JobSerializer } from "./job_repository";
 
 export interface RecordDTO {
   id: number;
@@ -17,6 +18,19 @@ export interface RecordDTO {
 export type Record = GetDomainModel<RecordSerializer>;
 export type RecordPayload = GetRequestPayload<RecordSerializer>;
 
+class JobRelationSerializer<
+  R extends boolean = false,
+  M extends boolean = false,
+> extends serializers.BaseSerializer<R, M> {
+  private serializer = new JobSerializer();
+  fromDTO = (data: JobDTO | null): Job | null => {
+    return data !== null ? this.serializer.fromDTO(data) : null;
+  };
+  toDTO = (data: number | null): number | null => {
+    return data !== null ? data : null;
+  };
+}
+
 class RecordsAPI extends API<RecordDTO> {
   url = "/api/records";
 }
@@ -29,6 +43,8 @@ export class RecordSerializer<
   title = new serializers.EnumField<string | null>();
   content = new serializers.StringField();
   date = new DateOnlyField();
+  job = new JobRelationSerializer();
+
   created_at = new serializers.DateField({ readonly: true });
   updated_at = new serializers.DateField({ readonly: true });
 }

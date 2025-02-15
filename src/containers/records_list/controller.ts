@@ -1,4 +1,5 @@
 import { makeAutoObservable } from "mobx";
+
 import { AppStore } from "stores/app_store";
 
 interface Options {
@@ -32,4 +33,9 @@ export class RecordsListController {
     const { recordsStore } = this.appStore.stores;
     await recordsStore.loadNextPage();
   }
+
+  delete = async (id: number) => {
+    const { recordsStore } = this.appStore.stores;
+    await recordsStore.delete(id);
+  };
 }

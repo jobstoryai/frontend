@@ -1,51 +1,23 @@
 import React, { ReactNode } from "react";
-import { EllipsisOutlined, TagFilled } from "@ant-design/icons";
 import {
-  Card,
-  Col,
-  Dropdown,
-  MenuProps,
-  Row,
-  Space,
-  Tag,
-  Typography,
-} from "antd";
+  DeleteOutlined,
+  EditOutlined,
+  EllipsisOutlined,
+  TagFilled,
+} from "@ant-design/icons";
+import { Card, Col, Dropdown, Row, Space, Tag, Typography } from "antd";
 import { format } from "date-fns";
 
 import { Record } from "repositories/record_repository";
 
+import { MayBeAsync } from "types";
+
 interface Props {
   record: Record;
+  onDelete: (id: number) => MayBeAsync<void>;
 }
 
-const actions: MenuProps["items"] = [
-  {
-    label: (
-      <a
-        href="https://www.antgroup.com"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Edit
-      </a>
-    ),
-    key: "edit",
-  },
-  {
-    label: (
-      <a
-        href="https://www.aliyun.com"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Delete
-      </a>
-    ),
-    key: "delete",
-  },
-];
-
-export const RecordCard = ({ record }: Props) => (
+export const RecordCard = ({ record, onDelete }: Props) => (
   <Card
     style={{
       marginBottom: 12,
@@ -53,9 +25,36 @@ export const RecordCard = ({ record }: Props) => (
       width: "100%",
     }}
   >
-    <Card.Meta title={record.title ?? ""} description={record.content} />
+    <Card.Meta
+      title={record.title ?? ""}
+      description={
+        <>
+          <Typography.Paragraph>{record.content}</Typography.Paragraph>
+        </>
+      }
+    />
     <div style={{ position: "absolute", top: 14, right: 18 }}>
-      <Dropdown menu={{ items: actions }} trigger={["click"]}>
+      <Dropdown
+        menu={{
+          items: [
+            {
+              label: "Edit",
+              key: "edit",
+              icon: <EditOutlined />,
+              onClick: () => null,
+            },
+            { type: "divider" },
+            {
+              label: "Delete",
+              key: "delete",
+              style: { color: "red" },
+              icon: <DeleteOutlined />,
+              onClick: () => onDelete(record.id),
+            },
+          ],
+        }}
+        trigger={["click"]}
+      >
         <a onClick={(e) => e.preventDefault()}>
           <Space>
             <EllipsisOutlined style={{ color: "#555" }} />
@@ -73,6 +72,11 @@ export const RecordCard = ({ record }: Props) => (
           flex: 1,
         }}
       >
+        {record.job?.company ? (
+          <Typography.Paragraph style={{ marginRight: 8 }}>
+            @<strong>{record.job.company}</strong>
+          </Typography.Paragraph>
+        ) : null}
         <Typography.Text style={{ color: "#888" }}>
           {format(new Date(record.date), "yyyy-MM-dd")}
         </Typography.Text>

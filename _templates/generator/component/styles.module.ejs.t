@@ -1,5 +1,5 @@
 ---
-to: src/components/<%=name%>/styles.module.css
+to: src/components/<%= h.changeCase.snakeCase(name) %>/styles.module.css
 ---
 .container {
 

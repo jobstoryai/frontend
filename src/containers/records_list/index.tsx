@@ -25,6 +25,7 @@ export const RecordsListContainer = observer(({}: Props) => {
     <RecordsListView
       isLoading={controller.isLoading}
       records={controller.data.items}
+      onDelete={controller.delete}
     />
   );
 });

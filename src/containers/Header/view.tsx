@@ -1,5 +1,5 @@
 import React from "react";
-import { DownOutlined, LogoutOutlined } from "@ant-design/icons";
+import { DownOutlined, LogoutOutlined, ProfileFilled } from "@ant-design/icons";
 import { Avatar, Dropdown, Flex, MenuProps, Space } from "antd";
 import Title from "antd/lib/typography/Title";
 import { observer } from "mobx-react-lite";
@@ -62,9 +62,9 @@ export const HeaderView = observer(({ user, isLoading, onLogout }: Props) => (
             <FundFilled style={{ marginRight: 6 }} />
             Tracking
           </Link>
-          <Link className={s.link} href="/settings">
-            <SettingFilled style={{ marginRight: 6 }} />
-            Settings
+          <Link className={s.link} href="/profile">
+            <ProfileFilled style={{ marginRight: 6 }} />
+            Profile
           </Link>
         </NoSSR>
       </Flex>

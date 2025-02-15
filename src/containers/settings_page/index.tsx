@@ -24,6 +24,7 @@ export const SettingsPageContainer = observer(({}: Props) => {
     <SettingsPageView
       isUpdating={controller.isUpdating}
       data={controller.data}
+      jobs={controller.jobs}
       onSubmit={controller.update}
     />
   );

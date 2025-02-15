@@ -22,6 +22,18 @@ class CvsAPI extends API<CvDTO> {
   url = "/api/cvs";
 }
 
+class CvVersionMinimalSerializer<
+  R extends boolean = false,
+  M extends boolean = false,
+> extends serializers.ModelSerializer<
+  { updated_at: string; id: string },
+  R,
+  M
+> {
+  id = new serializers.StringField({ readonly: true });
+  updated_at = new serializers.DateField({ readonly: true });
+}
+
 export class CvSerializer<
   R extends boolean = false,
   M extends boolean = false,
@@ -38,6 +50,7 @@ export class CvSerializer<
 
   created_at = new serializers.DateField({ readonly: true });
   updated_at = new serializers.DateField({ readonly: true });
+  versions = new CvVersionMinimalSerializer({ readonly: true, many: true });
 }
 
 export class CvsApiRepository extends repositories.APIRepository {
