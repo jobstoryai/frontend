@@ -63,17 +63,17 @@ resource "kubernetes_deployment_v1" "frontend" {
           }
 
           env {
-            name  = "KEYCLOAK_URL"
+            name  = "NEXT_PUBLIC_KEYCLOAK_URL"
             value = var.keycloak_url
           }
 
           env {
-            name  = "KEYCLOAK_CLIENT_ID"
+            name  = "NEXT_PUBLIC_KEYCLOAK_CLIENT_ID"
             value = var.keycloak_client_id
           }
 
           env {
-            name  = "KEYCLOAK_REALM"
+            name  = "NEXT_PUBLIC_KEYCLOAK_REALM"
             value = var.keycloak_realm
           }
         }
