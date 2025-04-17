@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React from "react";
 import {
   DeleteOutlined,
   EditOutlined,
@@ -14,10 +14,11 @@ import { MayBeAsync } from "types";
 
 interface Props {
   record: Record;
+  onEdit: (id: number) => MayBeAsync<void>;
   onDelete: (id: number) => MayBeAsync<void>;
 }
 
-export const RecordCard = ({ record, onDelete }: Props) => (
+export const RecordCard = ({ record, onEdit, onDelete }: Props) => (
   <Card
     style={{
       marginBottom: 12,
@@ -41,7 +42,7 @@ export const RecordCard = ({ record, onDelete }: Props) => (
               label: "Edit",
               key: "edit",
               icon: <EditOutlined />,
-              onClick: () => null,
+              onClick: () => onEdit(record.id),
             },
             { type: "divider" },
             {
@@ -80,6 +81,7 @@ export const RecordCard = ({ record, onDelete }: Props) => (
         <Typography.Text style={{ color: "#888" }}>
           {format(new Date(record.date), "yyyy-MM-dd")}
         </Typography.Text>
+
         <Typography.Text style={{ color: "#888" }}>
           SCORE: {record.score}
         </Typography.Text>

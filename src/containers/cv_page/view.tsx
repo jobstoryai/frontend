@@ -75,7 +75,7 @@ export const CvPageView = observer(
               wrapperCol={{ span: 20 }}
               initialValues={{
                 title: data?.title,
-                prompt: data?.prompt,
+                job_description: data?.job_description,
                 status: data?.status,
                 created_at: data?.created_at
                   ? format(data.created_at, "yyyy-MM-dd HH:mm")
@@ -92,12 +92,7 @@ export const CvPageView = observer(
               <Form.Item name="title" label="Title">
                 <Input placeholder="Title" />
               </Form.Item>
-              {!isNew ? (
-                <Form.Item name="status" label="Status">
-                  <Input placeholder="Status" readOnly variant="borderless" />
-                </Form.Item>
-              ) : null}
-              <Form.Item name="prompt" label="Prompt">
+              <Form.Item name="job_description" label="Job Description">
                 <TextArea
                   styles={{ textarea: { minHeight: 100 } }}
                   rows={10}

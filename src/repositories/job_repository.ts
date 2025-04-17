@@ -1,23 +1,25 @@
 import { pagination, repositories, serializers } from "client-rest-framework";
 
+import { GetDomainModel, GetRequestPayload } from "types";
+
 import { API } from "./apis/api";
-import { DateOnlyOptionalField } from "./fields/date_only_optional_field";
 import { DateOnlyField } from "./fields/date_only_field";
+import { DateOnlyOptionalField } from "./fields/date_only_optional_field";
 
 export interface JobDTO {
   id: number;
-  company: string
+  company: string;
   position: string;
   description: string;
   started: string;
   finished: string | null;
 }
 
-export type Job = ReturnType<JobSerializer["fromDTO"]>;
-export type JobPayload = ReturnType<JobSerializer["toDTO"]>;
+export type Job = GetDomainModel<JobSerializer>;
+export type JobPayload = GetRequestPayload<JobSerializer>;
 
 class JobsApi extends API<JobDTO> {
-  pagination = new pagination.NoPagination() as any
+  pagination = new pagination.NoPagination() as any;
   url = "/api/jobs";
 }
 
@@ -35,9 +37,7 @@ export class JobSerializer<
   updated_at = new serializers.DateField({ readonly: true });
 }
 
-
 export class JobsApiRepository extends repositories.APIRepository {
   api = new JobsApi();
   serializer = new JobSerializer();
 }
-

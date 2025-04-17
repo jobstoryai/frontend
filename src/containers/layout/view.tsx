@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
 import { Layout } from "antd";
 
-import { HeaderContainer } from "../Header";
+import { HeaderContainer } from "../header";
 
 const { Header, Content } = Layout;
 

@@ -1,5 +1,6 @@
 import React, { FC } from "react";
 import {
+    CheckCircleFilled,
   CheckCircleOutlined,
   DeleteOutlined,
   EditFilled,
@@ -19,13 +20,6 @@ import { MayBeAsync } from "types";
 
 import s from "./cv_list_item.module.css";
 
-const CV_ICONS: Record<Cv["status"], FC> = {
-  PENDING: () => <SyncOutlined size={40} spin alt="pending" />,
-  PROCESSING: () => <SyncOutlined size={40} spin alt="processing" />,
-  ACTIVE: () => <CheckCircleOutlined size={40} alt="active" />,
-  INACTIVE: () => <PauseCircleOutlined size={40} alt="inactive" />,
-};
-
 interface Props {
   item: Cv;
   onEdit: (id: number) => MayBeAsync<void>;
@@ -35,7 +29,6 @@ interface Props {
 
 export const CvListItem = ({ item, onEdit, onDeactivate, onDelete }: Props) => {
   const router = useRouter();
-  const Icon = CV_ICONS[item.status];
 
   const goToCvPage = () => {
     router.push(`/cvs/${item.id}`);
@@ -82,7 +75,7 @@ export const CvListItem = ({ item, onEdit, onDeactivate, onDelete }: Props) => {
       ]}
     >
       <List.Item.Meta
-        avatar={<Icon />}
+        avatar={<CheckCircleFilled />}
         className={s.item_inner}
         onClick={goToCvPage}
         title={item.title}

@@ -33,3 +33,18 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# terraform
+*.tfvars
+*.tfvars.json
+**/.terraform/*
+*.tfplan
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+terraform.tfstate
+terraform.tfstate.*
+.terraform.lock.hcl
+backend.tfvars

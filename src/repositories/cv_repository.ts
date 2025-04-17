@@ -8,7 +8,7 @@ export interface CvDTO {
   id: number;
 
   title: string;
-  prompt: string;
+  job_description: string;
   status: string;
 
   created_at: string;
@@ -41,7 +41,7 @@ export class CvSerializer<
   id = new serializers.NumberField({ readonly: true });
 
   title = new serializers.EnumField<string>();
-  prompt = new serializers.StringField();
+  job_description = new serializers.StringField();
   status = new serializers.EnumField<
     "PENDING" | "PROCESSING" | "ACTIVE" | "INACTIVE",
     true,

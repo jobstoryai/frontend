@@ -30,9 +30,9 @@ interface Props {
 }
 
 const keycloak = new Keycloak({
-  url: "http://localhost:8100",
-  realm: "jobstory",
-  clientId: "jobstory-frontend",
+  url: process.env.NEXT_KEYCLOAK_URL,
+  realm: process.env.NEXT_KEYCLOAK_REALM,
+  clientId: process.env.NEXT_KEYCLOAK_CLIENT_ID,
   checkLoginIframe: false,
 });
 

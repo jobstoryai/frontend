@@ -17,6 +17,9 @@ export interface RecordDTO {
 
 export type Record = GetDomainModel<RecordSerializer>;
 export type RecordPayload = GetRequestPayload<RecordSerializer>;
+export interface RecordPayloadAnyJob extends RecordPayload {
+  job: any;
+}
 
 class JobRelationSerializer<
   R extends boolean = false,
@@ -40,10 +43,13 @@ export class RecordSerializer<
   M extends boolean = false,
 > extends serializers.ModelSerializer<RecordDTO, R, M> {
   id = new serializers.NumberField({ readonly: true });
-  title = new serializers.EnumField<string | null>();
+  title = new serializers.EnumField<string | null, true, false>({
+    readonly: true,
+  });
   content = new serializers.StringField();
   date = new DateOnlyField();
   job = new JobRelationSerializer();
+  score = new serializers.NumberField({ readonly: true });
 
   created_at = new serializers.DateField({ readonly: true });
   updated_at = new serializers.DateField({ readonly: true });

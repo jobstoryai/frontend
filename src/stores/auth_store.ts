@@ -1,8 +1,10 @@
 import { makeAutoObservable, runInAction } from "mobx";
+
 import { getLogger } from "lib/logger";
-import { AppStore } from "./app_store";
 import { TokenManager } from "lib/token_manager";
-import { PublicUser } from "repositories/user_repository";
+import { PublicUser, PublicUserPayload } from "repositories/user_repository";
+
+import { AppStore } from "./app_store";
 
 const log = getLogger(["stores", "AuthStore"]);
 
@@ -58,7 +60,15 @@ export class AuthStore {
     const user = await repos.users.get("me" as any);
     runInAction(() => {
       this.user = user;
-      console.log(this.user);
+    });
+  };
+
+  updateUser = async (payload: PublicUserPayload) => {
+    const { repos } = this.appStore;
+
+    const user = await repos.users.update("me" as any, payload);
+    runInAction(() => {
+      this.user = user;
     });
   };
 

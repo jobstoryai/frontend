@@ -9,7 +9,7 @@ import weekYear from "dayjs/plugin/weekYear";
 import type { AppProps } from "next/app";
 
 import { NoSSR } from "components/NoSSR";
-import { LayoutContainer } from "containers/Layout";
+import { LayoutContainer } from "containers/layout";
 import { ToastContainer } from "stores/toast_store/toast_container";
 import { AppStoreProvider } from "stores/use_store";
 import { AuthProvider } from "lib/auth_provider";

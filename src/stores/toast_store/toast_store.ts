@@ -1,4 +1,4 @@
-import { MessageInstance } from "antd/es/message/interface";
+import { MessageInstance } from "antd/lib/message/interface";
 import { makeAutoObservable } from "mobx";
 
 type ToastStyle = "success" | "warning" | "error";
@@ -10,7 +10,7 @@ export interface Toast {
   created_at: number;
 }
 
-export class ToastStore{
+export class ToastStore {
   messageApi: MessageInstance | null = null;
 
   constructor() {
@@ -22,6 +22,6 @@ export class ToastStore{
   }
 
   setMessageApi(messageApi: MessageInstance) {
-    this.messageApi = messageApi
+    this.messageApi = messageApi;
   }
 }

@@ -89,6 +89,25 @@ export class RecordsStore {
     }
   }
 
+  async update(id: number, payload: RecordPayload) {
+    const { repos } = this.appStore;
+
+    try {
+      this.state.isCreating = true;
+      const updatedRecord = await repos.records.update(id, payload);
+
+      runInAction(() => {
+        const index = this.data.items.findIndex((item) => item.id === id);
+        if (index !== -1) {
+          this.data.items[index] = updatedRecord;
+        }
+        this.state.isCreating = false;
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   async delete(id: number) {
     const { repos } = this.appStore;
     await repos.records.delete(id);

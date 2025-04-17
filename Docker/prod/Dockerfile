@@ -1,4 +1,5 @@
 FROM node:22-alpine AS base
+LABEL org.opencontainers.image.source https://github.com/jobstoryai/frontend
 
 ENV NEXT_TELEMETRY_DISABLED 1
 ENV NODE_ENV production

@@ -41,7 +41,9 @@ export const CvVersionPreviewView = observer(({ data, user }: Props) => {
         }}
       >
         <Card>
-          <Typography.Title level={3}>{user?.username}</Typography.Title>
+          <Typography.Title level={3}>
+            {user?.first_name} {user?.last_name}
+          </Typography.Title>
           {data.raw_response?.model ? (
             <Collapse
               style={{ marginBottom: 8 }}
@@ -53,13 +55,10 @@ export const CvVersionPreviewView = observer(({ data, user }: Props) => {
                     <pre
                       style={{
                         width: "100%",
-                        border: "1px solid red",
                         padding: 0,
                       }}
-                    >{`
-MODEL: ${data.raw_response.model}
-EVAL_DURATION: ${formatDuration(data.raw_response.eval_duration * 1000)}
-                  `}</pre>
+                    >{`MODEL: ${data.raw_response.model}
+EVAL_DURATION: ${formatDuration(data.raw_response.eval_duration * 1000)}`}</pre>
                   ),
                 },
                 think
@@ -85,15 +84,25 @@ EVAL_DURATION: ${formatDuration(data.raw_response.eval_duration * 1000)}
             </Space>
           </Typography.Paragraph>
           <div>
-            {data?.json.experience.map((exp: any) => (
-              <>
-                <Typography.Paragraph key={exp.company}>
-                  <strong>{exp.position}</strong> at {exp.company} <br />
-                  <strong>Start Date</strong>: {exp.start_date}
-                  {exp.end_date ? ` - ${exp.end_date}` : " - present"}
-                  <br />
-                  <strong>Description</strong>: {exp.description ?? ""}
-                  <br />
+            {data?.json.jobs.map((exp: any) => (
+              <div key={`${exp.company}-${exp.position}`}>
+                <Typography.Title level={4} style={{ marginBottom: 0 }}>
+                  <strong>{exp.position}</strong> at {exp.company}
+                </Typography.Title>
+                <Typography.Paragraph style={{ color: "#666" }}>
+                  {exp.started}{" "}
+                  {exp.finished ? ` - ${exp.finished}` : " - present"}
+                </Typography.Paragraph>
+                <Space direction="vertical" wrap size={1}>
+                  {exp.description
+                    ?.split("\n")
+                    .map((paragraph: string, i: number) => (
+                      <Typography.Paragraph key={i} style={{ margin: 0 }}>
+                        {paragraph}
+                      </Typography.Paragraph>
+                    ))}
+                </Space>
+                <Typography.Paragraph>
                   {exp.achievements.length ? (
                     <>
                       <strong>Achievements</strong>:<br />
@@ -112,7 +121,7 @@ EVAL_DURATION: ${formatDuration(data.raw_response.eval_duration * 1000)}
                     </Tag>
                   ))}
                 </Space>
-              </>
+              </div>
             ))}
           </div>
         </Card>

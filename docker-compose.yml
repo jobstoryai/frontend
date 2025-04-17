@@ -12,6 +12,7 @@ services:
     environment:
       NEXT_PUBLIC_BACKEND_URL: http://localhost:4400
       SERVER_BACKEND_URL: http://backend:8000
+      KEYCLOAK_URL: http://localhost:8100
 
     volumes:
       - .:/app
