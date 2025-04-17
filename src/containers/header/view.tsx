@@ -1,20 +1,21 @@
 import React from "react";
 import { DownOutlined, LogoutOutlined, ProfileFilled } from "@ant-design/icons";
+import {
+  BookFilled,
+  FundFilled,
+  SettingFilled,
+  StarFilled,
+} from "@ant-design/icons";
 import { Avatar, Dropdown, Flex, MenuProps, Space } from "antd";
 import Title from "antd/lib/typography/Title";
 import { observer } from "mobx-react-lite";
 import Link from "next/link";
-import {
-  BookFilled,
-  SettingFilled,
-  StarFilled,
-  FundFilled,
-} from "@ant-design/icons";
 
 import { NoSSR } from "components/NoSSR";
 
-import s from "./styles.module.css";
 import { PROJECT_NAME } from "config";
+
+import s from "./styles.module.css";
 
 interface Props {
   user?: {

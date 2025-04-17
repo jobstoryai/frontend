@@ -1,15 +1,19 @@
 import React, {
-  ReactNode,
   createContext,
+  ReactNode,
   useContext,
   useEffect,
   useState,
 } from "react";
+// @ts-ignore
+import Keycloak from "keycloak-js";
 import { observer } from "mobx-react";
+
 import { useStore } from "stores/use_store";
 import { getLogger } from "lib/logger";
-import Keycloak from "keycloak-js";
+
 import { MayBeAsync } from "types";
+import { isServer } from "lib/is_server";
 
 const log = getLogger(["providers", "AuthProvider"]);
 
@@ -30,12 +34,12 @@ interface Props {
 }
 
 
-const keycloak = new Keycloak({
+const keycloak = !isServer ? new Keycloak({
   url: process.env.NEXT_PUBLIC_KEYCLOAK_URL,
   realm: process.env.NEXT_PUBLIC_KEYCLOAK_REALM,
   clientId: process.env.NEXT_PUBLIC_KEYCLOAK_CLIENT_ID,
   checkLoginIframe: false,
-});
+}) : null;
 
 let isKeycloakInitialized = false;
 
@@ -62,7 +66,7 @@ export const AuthProvider = observer(({ children }: Props) => {
       authStore.isReady = true;
       isKeycloakInitialized = true;
     });
-  }, []);
+  }, [authStore]);
 
   return (
     <AuthContext.Provider

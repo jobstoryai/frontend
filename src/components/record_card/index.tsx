@@ -95,7 +95,7 @@ export const RecordCard = ({ record, onDelete }: Props) => (
       >
         {/* TODO: TAGS */}
         {[].map((tag) => (
-          <Tag color="pink">
+          <Tag color="pink" key={tag}>
             <TagFilled /> {tag}
           </Tag>
         ))}

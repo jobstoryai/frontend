@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "test": "jest",
+    "type-check": "tsc",
     "create:component": "hygen generator component --",
     "create:container": "hygen generator container --"
   },

@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
-import dynamic from "next/dynamic";
 import { observer } from "mobx-react-lite";
+import dynamic from "next/dynamic";
 
 interface Props {
   children: ReactNode;

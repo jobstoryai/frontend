@@ -1,6 +1,7 @@
 import React from "react";
-import { Avatar, Card } from "antd";
 import { UserOutlined } from "@ant-design/icons";
+import { Avatar, Card } from "antd";
+
 import { PublicUser } from "repositories/user_repository";
 
 interface Props {

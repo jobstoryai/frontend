@@ -1,11 +1,11 @@
 import React from "react";
+import { AuthController } from "controllers/auth_controller";
 import { observer } from "mobx-react-lite";
 
+import { useAuth } from "lib/auth_provider";
 import { useController } from "lib/use_controller";
 
 import { HeaderView } from "./view";
-import { AuthController } from "controllers/auth_controller";
-import { useAuth } from "lib/auth_provider";
 
 export const HeaderContainer = observer(() => {
   const controller = useController(AuthController, {});

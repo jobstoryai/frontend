@@ -1,5 +1,7 @@
 import { api, pagination } from "client-rest-framework";
+
 import { PAGE_SIZE } from "config";
+
 import { HTTPClient } from "./http_client";
 
 const BASE_URL = `http://localhost:4400`;

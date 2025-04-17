@@ -3,8 +3,8 @@ import { observer } from "mobx-react-lite";
 
 import { useController } from "lib/use_controller";
 
-import { TrackingPageView } from "./view";
 import { TrackingPageController } from "./controller";
+import { TrackingPageView } from "./view";
 
 export interface Props {}
 
@@ -13,7 +13,7 @@ export const TrackingPageContainer = observer(({}: Props) => {
 
   useEffect(() => {
     controller.load(1);
-  }, []);
+  }, [controller]);
 
   return (
     <TrackingPageView 

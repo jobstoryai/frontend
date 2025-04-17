@@ -1,8 +1,9 @@
 import React from "react";
 import { observer } from "mobx-react-lite";
 
-import { LoginPageView } from "./view";
 import { useAuth } from "lib/auth_provider";
+
+import { LoginPageView } from "./view";
 
 export interface Props {}
 

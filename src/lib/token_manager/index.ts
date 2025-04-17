@@ -1,8 +1,11 @@
-import { getLogger } from "lib/logger";
-import jwtDecode from "jwt-decode";
 import { EventEmitter } from "events";
-import { TokenStore } from "./token_store";
+import jwtDecode from "jwt-decode";
+
+import { getLogger } from "lib/logger";
+
 import { MayBeAsync } from "types";
+
+import { TokenStore } from "./token_store";
 
 const log = getLogger(["TokenManager"]);
 

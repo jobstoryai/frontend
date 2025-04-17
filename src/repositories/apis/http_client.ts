@@ -1,5 +1,6 @@
 import { api } from "client-rest-framework";
 import Router from "next/router";
+
 import { isServer } from "lib/is_server";
 import { TokenStore } from "lib/token_manager/token_store";
 

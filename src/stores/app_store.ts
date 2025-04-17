@@ -3,6 +3,7 @@ import { makeAutoObservable } from "mobx";
 import { getLogger } from "lib/logger";
 import { CvsApiRepository } from "repositories/cv_repository";
 import { CvVersionApiRepository } from "repositories/cv_version_repsitory";
+import { JobsApiRepository } from "repositories/job_repository";
 import { RecordsApiRepository } from "repositories/record_repository";
 import { UserApiRepository } from "repositories/user_repository";
 import { UserSettingsApiRepository } from "repositories/user_settings";
@@ -10,7 +11,6 @@ import { UserSettingsApiRepository } from "repositories/user_settings";
 import { AuthStore } from "./auth_store";
 import { RecordsStore } from "./records_store";
 import { ToastStore } from "./toast_store";
-import { JobsApiRepository } from "repositories/job_repository";
 
 const log = getLogger(["stores", "AppStore"]);
 
