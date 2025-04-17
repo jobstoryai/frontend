@@ -49,7 +49,7 @@ resource "kubernetes_deployment_v1" "frontend" {
 
           env {
             name  = "NODE_ENV"
-            value = "development"
+            value = "production"
           }
 
           env {

@@ -4,7 +4,7 @@ import { PAGE_SIZE } from "config";
 
 import { HTTPClient } from "./http_client";
 
-const BASE_URL = `http://localhost:4400`;
+const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL as string;
 
 export class API<T> extends api.RESTAPI<T> {
   options = {
