@@ -30,9 +30,26 @@ resource "kubernetes_deployment_v1" "frontend" {
 
           port { container_port = 3000 }
 
+          command = ["/bin/sh", "-c"]
+          args    = ["yarn build -- --no-lint && yarn start"]
+
+          port {
+            container_port = 3000
+          }
+
+          readiness_probe {
+            http_get {
+              path = "/"
+              port = 3000
+            }
+            initial_delay_seconds = 15
+            period_seconds        = 10
+            failure_threshold     = 3
+          }
+
           env {
             name  = "NODE_ENV"
-            value = "production"
+            value = "development"
           }
 
           env {
@@ -47,21 +64,21 @@ resource "kubernetes_deployment_v1" "frontend" {
 
           env {
             name  = "KEYCLOAK_URL"
-            value = var.keycoak_url
+            value = var.keycloak_url
           }
 
           env {
             name  = "KEYCLOAK_CLIENT_ID"
-            value = var.keycoak_client_id
+            value = var.keycloak_client_id
           }
 
           env {
             name  = "KEYCLOAK_REALM"
-            value = var.keycoak_realm
+            value = var.keycloak_realm
           }
         }
 
-        image_pull_secrets { name = kubernetes_secret_v1.ghcr_fe.metadata[0].name }
+        image_pull_secrets { name = kubernetes_secret_v1.ghcr.metadata[0].name }
       }
     }
   }
@@ -137,14 +154,14 @@ variable "frontend_server_backend_url" {
   description = "NextJS server backend URL"
 }
 
-variable "keycoak_url" {
+variable "keycloak_url" {
   type        = string
 }
 
-variable "keycoak_client_id" {
+variable "keycloak_client_id" {
   type        = string
 }
 
-variable "keycoak_realm" {
+variable "keycloak_realm" {
   type        = string
 }

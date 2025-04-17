@@ -1,29 +1,28 @@
+"use client";
+
 import React, {
   createContext,
   ReactNode,
   useContext,
   useEffect,
   useState,
+  useMemo,
 } from "react";
-// @ts-ignore
 import Keycloak from "keycloak-js";
 import { observer } from "mobx-react";
 
 import { useStore } from "stores/use_store";
 import { getLogger } from "lib/logger";
 
-import { MayBeAsync } from "types";
-import { isServer } from "lib/is_server";
-
 const log = getLogger(["providers", "AuthProvider"]);
 
 const AuthContext = createContext<{
-  login: () => MayBeAsync<void>;
-  logout: () => MayBeAsync<void>;
+  login: () => Promise<void>;
+  logout: () => void;
   isAuthenticated: boolean;
 }>({
   login: async () => {},
-  logout: async () => {},
+  logout: () => {},
   isAuthenticated: false,
 });
 
@@ -33,53 +32,57 @@ interface Props {
   children: ReactNode;
 }
 
-
-const keycloak = !isServer ? new Keycloak({
-  url: process.env.NEXT_PUBLIC_KEYCLOAK_URL,
-  realm: process.env.NEXT_PUBLIC_KEYCLOAK_REALM,
-  clientId: process.env.NEXT_PUBLIC_KEYCLOAK_CLIENT_ID,
-  checkLoginIframe: false,
-}) : null;
-
-let isKeycloakInitialized = false;
-
-// TODO: It seems like it can be moved into AuthStore
 export const AuthProvider = observer(({ children }: Props) => {
   const [isReady, setIsReady] = useState(false);
+  const [keycloak, setKeycloak] = useState<Keycloak | null>(null);
   const { authStore } = useStore();
   const accessToken = authStore.token;
 
   useEffect(() => {
-    if (keycloak.initialized || isKeycloakInitialized) {
-      return;
-    }
-
-    keycloak.init({ checkLoginIframe: false }).then(async () => {
-      if (keycloak.token) {
-        log(`Received token ${keycloak.token}`);
-        authStore.setToken(keycloak.token);
-      }
-      if (authStore.token) {
-        await authStore.pullUser();
-      }
-      setIsReady(true);
-      authStore.isReady = true;
-      isKeycloakInitialized = true;
+    const kc = new Keycloak({
+      url: process.env.NEXT_PUBLIC_KEYCLOAK_URL as string,
+      realm: process.env.NEXT_PUBLIC_KEYCLOAK_REALM as string,
+      clientId: process.env.NEXT_PUBLIC_KEYCLOAK_CLIENT_ID as string,
     });
+
+    kc.init({
+      checkLoginIframe: false,
+    })
+      .then(() => {
+        setKeycloak(kc);
+        if (kc.token) {
+          log(`Received token ${kc.token}`);
+          authStore.setToken(kc.token);
+        }
+        if (authStore.token) {
+          authStore.pullUser();
+        }
+        setIsReady(true);
+        authStore.isReady = true;
+        log("Keycloak initialized");
+      })
+      .catch((err) => {
+        console.error("Keycloak init failed", err);
+        setIsReady(true);
+      });
   }, [authStore]);
 
+  const login = useMemo(() => {
+    return keycloak ? () => keycloak.login() : async () => {};
+  }, [keycloak]);
+
+  const logout = useMemo(() => {
+    return () => {
+      authStore.logout();
+      keycloak?.logout();
+    };
+  }, [keycloak, authStore]);
+
+  const isAuthenticated = Boolean(accessToken);
+
   return (
-    <AuthContext.Provider
-      value={{
-        login: keycloak.login,
-        logout: () => {
-          authStore.logout();
-          keycloak.logout();
-        },
-        isAuthenticated: Boolean(accessToken),
-      }}
-    >
-      {isReady ? children : "Loading..."}
+    <AuthContext.Provider value={{ login, logout, isAuthenticated }}>
+      {isReady ? children : <div>Loading...</div>}
     </AuthContext.Provider>
   );
 });
