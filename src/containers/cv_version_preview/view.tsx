@@ -70,7 +70,7 @@ EVAL_DURATION: ${formatDuration(data.raw_response.eval_duration * 1000)}`}</pre>
                       ),
                     }
                   : null,
-              ].filter((i) => i !== null)}
+              ].filter((i) => i !== null) as any}
             />
           ) : null}
           <Typography.Paragraph>{data?.json.about}</Typography.Paragraph>

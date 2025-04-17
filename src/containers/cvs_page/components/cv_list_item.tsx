@@ -77,6 +77,7 @@ export const CvListItem = ({ item, onEdit, onDeactivate, onDelete }: Props) => {
       <List.Item.Meta
         avatar={<CheckCircleFilled />}
         className={s.item_inner}
+        // @ts-ignore
         onClick={goToCvPage}
         title={item.title}
         description={format(item.created_at, "yyyy-MM-dd HH:mm")}

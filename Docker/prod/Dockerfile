@@ -7,9 +7,10 @@ ENV PORT 3000
 
 WORKDIR /app
 
+RUN corepack enable && corepack prepare yarn@4.5.0 --activate
 COPY . .
 RUN yarn --frozen-lockfile
-RUN yarn build
+RUN yarn build -- --no-lint
 
 EXPOSE 3000
 

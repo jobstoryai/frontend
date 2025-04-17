@@ -12,7 +12,9 @@ services:
     environment:
       NEXT_PUBLIC_BACKEND_URL: http://localhost:4400
       SERVER_BACKEND_URL: http://backend:8000
-      KEYCLOAK_URL: http://localhost:8100
+      NEXT_PUBLIC_KEYCLOAK_URL: http://localhost:8100
+      NEXT_PUBLIC_KEYCLOAK_REALM: jobstory
+      NEXT_PUBLIC_KEYCLOAK_CLIENT_ID: jobstory-frontend
 
     volumes:
       - .:/app

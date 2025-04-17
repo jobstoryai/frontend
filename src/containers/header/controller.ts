@@ -16,19 +16,6 @@ export class HeaderController {
   }
 
   /**
-   * Returns true if user object isn't loaded yet
-   */
-  get isLoading() {
-    const { authStore } = this.appStore;
-    return authStore.isLoading;
-  }
-
-  get user() {
-    const { authStore } = this.appStore;
-    return authStore.me;
-  }
-
-  /**
    * Handles log out action
    */
   logout = () => {
