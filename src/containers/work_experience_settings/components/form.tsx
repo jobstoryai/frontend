@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Button, DatePicker, Form, Input, Modal } from "antd";
+import { Button, Col, DatePicker, Form, Input, Modal, Row } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import TextArea from "antd/lib/input/TextArea";
 import dayjs from "dayjs";
@@ -92,12 +92,29 @@ export const WorkExperienceForm = observer(
           <Form.Item name="description" label="Description">
             <TextArea showCount maxLength={2000} />
           </Form.Item>
-          <Form.Item name="started" label="Started">
-            <DatePicker />
-          </Form.Item>
-          <Form.Item name="finished" label="Finished">
-            <DatePicker />
-          </Form.Item>
+
+          <Row gutter={16}>
+            <Col xs={12}>
+              <Form.Item
+                name="started"
+                label="Started"
+                labelCol={{ xs: { span: 8 } }}
+                wrapperCol={{ xs: { span: 16 } }}
+              >
+                <DatePicker />
+              </Form.Item>
+            </Col>
+            <Col xs={12}>
+              <Form.Item
+                name="finished"
+                label="Finished"
+                labelCol={{ xs: { span: 8 } }}
+                wrapperCol={{ xs: { span: 16 } }}
+              >
+                <DatePicker />
+              </Form.Item>
+            </Col>
+          </Row>
         </Form>
       </Modal>
     );

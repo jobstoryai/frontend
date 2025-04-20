@@ -21,7 +21,7 @@ export class <%=name%>Controller {
   async load(id: number) {
     const { repos } = this.appStore;
     this.isLoading = true;
-    this.data = "<%=name>%";
+    this.data = "<%=name%>";
 
 
     runInAction(() => {

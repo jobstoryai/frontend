@@ -1,21 +1,26 @@
-import React from "react";
-import { DownOutlined, LogoutOutlined, ProfileFilled } from "@ant-design/icons";
+import React, { useMemo, useState } from "react";
 import {
-  BookFilled,
-  FundFilled,
-  SettingFilled,
-  StarFilled,
+  LoginOutlined,
+  LogoutOutlined,
+  MenuOutlined,
+  ProfileFilled,
+  UserOutlined,
 } from "@ant-design/icons";
-import { Avatar, Dropdown, Flex, MenuProps, Space } from "antd";
+import { BookFilled, FundFilled, StarFilled } from "@ant-design/icons";
+import { Drawer, Flex, Layout, Menu } from "antd";
+import { Header } from "antd/lib/layout/layout";
+import { MenuItemType } from "antd/lib/menu/interface";
 import Title from "antd/lib/typography/Title";
 import { observer } from "mobx-react-lite";
 import Link from "next/link";
-
-import { NoSSR } from "components/NoSSR";
+import { useRouter } from "next/router";
+import { useLocalStorage, useWindowSize } from "usehooks-ts";
 
 import { PROJECT_NAME } from "config";
 
 import s from "./styles.module.css";
+
+const { Sider } = Layout;
 
 interface Props {
   user?: {
@@ -24,79 +29,212 @@ interface Props {
   } | null;
   isLoading: boolean;
   onLogout: () => void;
+  onLogin: () => void;
+  selectedPaths: string[];
 }
 
-const dropdownItems: MenuProps["items"] = [
-  { icon: LogoutOutlined, label: "Logout", key: "logout" },
-].map(({ icon, label, key }) => ({
-  key,
-  icon: React.createElement(icon),
-  label,
-}));
-
-export const HeaderView = observer(({ user, isLoading, onLogout }: Props) => (
-  <Flex>
-    <Flex style={{ flexGrow: 1 }}>
-      <Flex justify="flex-start" align="center">
-        <Link
-          style={{
-            flexGrow: 1,
-            display: "flex",
-            paddingTop: 6,
-          }}
-          href="/"
-        >
-          <Title className={s.logo} level={4}>
+const SiderMenu = ({
+  isLoggedIn,
+  isLoggedOut,
+  selectedPaths,
+  menuItems,
+  collapsed,
+  setCollapsed,
+}: Props & {
+  isLoggedIn: boolean;
+  isLoggedOut: boolean;
+  collapsed: boolean;
+  menuItems: any;
+  setCollapsed: (v: boolean) => void;
+}) => {
+  return (
+    <Sider
+      collapsible={isLoggedIn}
+      collapsed={isLoggedIn ? collapsed : false}
+      onCollapse={(value) => {
+        setCollapsed(value);
+      }}
+    >
+      <Link
+        style={{
+          flexGrow: 1,
+          display: "flex",
+          paddingTop: 6,
+        }}
+        href="/"
+      >
+        {(isLoggedOut || !collapsed) && (
+          <Title className={s.logo} level={5}>
             {PROJECT_NAME}
           </Title>
-        </Link>
-        <NoSSR>
-          <Link className={s.link} href="/records">
-            <StarFilled style={{ marginRight: 6 }} />
-            Records
-          </Link>
-          <Link className={s.link} href="/cvs">
-            <BookFilled style={{ marginRight: 6 }} />
-            CVs
-          </Link>
-          <Link className={s.link} href="/tracking">
-            <FundFilled style={{ marginRight: 6 }} />
-            Tracking
-          </Link>
-          <Link className={s.link} href="/profile">
-            <ProfileFilled style={{ marginRight: 6 }} />
-            Profile
-          </Link>
-        </NoSSR>
-      </Flex>
-    </Flex>
-    <Flex style={{ flexGrow: 1 }} align="center" justify="flex-end">
-      <NoSSR>
-        <Space direction="horizontal">
-          {isLoading ? null : user ? (
-            <>
-              <Dropdown
-                arrow
-                menu={{
-                  onClick: ({ key }) => {
-                    if (key === "logout") {
-                      onLogout();
-                    }
-                  },
-                  items: dropdownItems,
-                }}
-              >
-                <a onClick={(e) => e.preventDefault()}>
-                  <span className={s.username}>{user.email}</span>
-                  <Avatar className={s.avatar}>
-                    {user.username[0].toUpperCase()}
-                  </Avatar>
-                </a>
-              </Dropdown>
-            </>
-          ) : null}
-        </Space>
-      </NoSSR>
-    </Flex>
-  </Flex>
-));
+        )}
+      </Link>
+      <Menu
+        theme="dark"
+        mode="inline"
+        defaultSelectedKeys={["1"]}
+        selectedKeys={selectedPaths}
+        items={menuItems}
+      />
+    </Sider>
+  );
+};
+
+const MobileMenu = ({
+  selectedPaths,
+  menuItems,
+}: Props & {
+  isLoggedIn: boolean;
+  isLoggedOut: boolean;
+  menuItems: any;
+}) => {
+  const [visible, setVisible] = useState(false);
+  const router = useRouter();
+
+  return (
+    <>
+      <Header>
+        <Flex style={{ flexGrow: 1, height: "100%" }}>
+          <Flex justify="flex-start" align="flex-start" style={{ flexGrow: 1 }}>
+            <Link
+              style={{
+                display: "flex",
+                alignItems: "center",
+                paddingTop: 6,
+                textAlign: "left",
+                height: "100%",
+              }}
+              href="/"
+            >
+              <Title className={s.logo} level={4}>
+                {PROJECT_NAME}
+              </Title>
+            </Link>
+          </Flex>
+          <Flex
+            justify="flex-end"
+            align="center"
+            style={{ flexGrow: 1, minWidth: 40 }}
+          >
+            <MenuOutlined
+              onClick={() => setVisible(!visible)}
+              style={{ color: "#CCC", fontSize: 24 }}
+            />
+          </Flex>
+        </Flex>
+      </Header>
+      <Drawer
+        placement="right"
+        onClose={() => setVisible(false)}
+        open={visible}
+      >
+        <Menu
+          theme="light"
+          selectedKeys={selectedPaths}
+          mode="vertical"
+          onClick={() => setVisible(false)}
+          items={menuItems}
+        />
+      </Drawer>
+    </>
+  );
+};
+
+export const HeaderView = observer(
+  ({ isLoading, user, selectedPaths, onLogout, onLogin }: Props) => {
+    const isLoggedIn = !isLoading && Boolean(user);
+    const isLoggedOut = !isLoading && !user;
+    const router = useRouter();
+    const [collapsed, setCollapsed] = useLocalStorage("sider-collapsed", false);
+
+    const window = useWindowSize();
+    const isMobile = window.width <= 575;
+
+    const menuItems = useMemo(() => {
+      return [
+        isLoggedIn
+          ? {
+              key: "/records",
+              icon: <StarFilled />,
+              label: "Records",
+              onClick: () => router.push(`/records`),
+            }
+          : null,
+        isLoggedIn
+          ? {
+              key: "/cvs",
+              icon: <BookFilled />,
+              label: "CVs",
+              onClick: () => router.push(`/cvs`),
+            }
+          : null,
+        isLoggedIn
+          ? {
+              key: "/tracking",
+              icon: <FundFilled />,
+              label: "Tracking",
+              onClick: () => router.push(`/tracking`),
+            }
+          : null,
+        isLoggedIn
+          ? {
+              key: "/profile",
+              icon: <ProfileFilled />,
+              label: "Profile",
+              onClick: () => router.push(`/profile`),
+            }
+          : null,
+        isLoggedIn && !isMobile && !collapsed
+          ? {
+              key: "user",
+              icon: <UserOutlined />,
+              label: user?.email,
+              style: { pointerEvents: "none", marginTop: 32 },
+            }
+          : null,
+        isLoggedIn
+          ? {
+              key: "logout",
+              icon: <LogoutOutlined />,
+              label: "Logout",
+              onClick: () => onLogout(),
+            }
+          : null,
+        isLoggedOut
+          ? {
+              key: "login",
+              icon: <LoginOutlined />,
+              label: "Login",
+              onClick: onLogin,
+            }
+          : null,
+      ];
+    }, [
+      isLoggedOut,
+      isLoggedIn,
+      onLogin,
+      onLogout,
+      router,
+      user,
+      collapsed,
+      isMobile,
+    ]);
+
+    const props = {
+      isLoggedIn,
+      isLoggedOut,
+      menuItems,
+      onLogin,
+      onLogout,
+      isLoading,
+      user,
+      selectedPaths,
+    };
+
+    return isMobile ? (
+      <MobileMenu {...props} />
+    ) : (
+      <SiderMenu collapsed={collapsed} setCollapsed={setCollapsed} {...props} />
+    );
+  },
+);
