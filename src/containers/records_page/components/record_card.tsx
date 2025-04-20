@@ -81,10 +81,6 @@ export const RecordCard = ({ record, onEdit, onDelete }: Props) => (
         <Typography.Text style={{ color: "#888" }}>
           {format(new Date(record.date), "yyyy-MM-dd")}
         </Typography.Text>
-
-        <Typography.Text style={{ color: "#888" }}>
-          SCORE: {record.score}
-        </Typography.Text>
       </Col>
       <Col
         style={{

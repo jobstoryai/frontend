@@ -6,7 +6,7 @@ services:
   frontend:
     restart: unless-stopped
     image: node:22-alpine
-    command: sh -c "corepack enable -- && yarn build -- --no-lint && yarn start"
+    command: sh -c "corepack enable -- && yarn dev"
     working_dir: /app
 
     environment:

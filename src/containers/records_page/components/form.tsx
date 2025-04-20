@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Button, DatePicker, Form, Input, Modal, Row, Select } from "antd";
+import { Button, Col, DatePicker, Form, Input, Modal, Row, Select } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import TextArea from "antd/lib/input/TextArea";
 import dayjs from "dayjs";
@@ -100,25 +100,38 @@ export const RecordFormModal = observer(
               placeholder="Record your new achievement"
             />
           </Form.Item>
-          {!isLoadingJobs ? (
-            <Form.Item
-              name="job"
-              label="Job"
-              required
-              style={{ marginBottom: 4 }}
-            >
-              <Select size="small" style={{ flexGrow: 1, width: 200 }}>
-                {jobs.map((job) => (
-                  <Select.Option key={job.id} value={job.id}>
-                    {job.company}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Form.Item>
-          ) : null}
-          <Form.Item name="date" label="Date">
-            <DatePicker size="small" style={{ width: 200 }} />
-          </Form.Item>
+          <Row gutter={16}>
+            <Col xs={12}>
+              {!isLoadingJobs ? (
+                <Form.Item
+                  name="job"
+                  label="Job"
+                  required
+                  style={{ marginBottom: 4 }}
+                  labelCol={{ xs: 6 }}
+                  wrapperCol={{ xs: 18 }}
+                >
+                  <Select size="small" style={{ width: "100%" }}>
+                    {jobs.map((job) => (
+                      <Select.Option key={job.id} value={job.id}>
+                        {job.company}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              ) : null}
+            </Col>
+            <Col xs={12}>
+              <Form.Item
+                name="date"
+                label="Date"
+                labelCol={{ xs: 6 }}
+                wrapperCol={{ xs: 18 }}
+              >
+                <DatePicker size="small" style={{ width: "100%" }} />
+              </Form.Item>
+            </Col>
+          </Row>
         </Form>
       </Modal>
     );
