@@ -72,7 +72,7 @@ jobs:
           TF_VAR_github_username: ${{ vars.GHCR_USERNAME }}
           TF_VAR_github_token: ${{ secrets.GHCR_TOKEN }}
           TF_VAR_github_email: ${{ secrets.GHCR_EMAIL }}
-          TF_VAR_frontend_host: ${{ vars.FRONTND_HOST}}
+          TF_VAR_frontend_host: ${{ vars.FRONTND_HOST }}
           TF_VAR_frontend_public_backend_url: ${{ vars.FRONTEND_PUBLIC_BACKEND_URL }}
           TF_VAR_frontend_server_backend_url: ${{ vars.SERVER_BACKEND_URL }}
           TF_VAR_keycloak_url: ${{ vars.KEYCLOAK_URL }}

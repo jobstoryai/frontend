@@ -134,7 +134,7 @@ resource "kubernetes_ingress_v1" "frontend_ingress" {
       }
     }
 
-    tls { hosts = [var.frontend_host] }
+    tls { hosts = compact([var.frontend_host]) }
   }
 }
 
@@ -155,13 +155,13 @@ variable "frontend_server_backend_url" {
 }
 
 variable "keycloak_url" {
-  type        = string
+  type = string
 }
 
 variable "keycloak_client_id" {
-  type        = string
+  type = string
 }
 
 variable "keycloak_realm" {
-  type        = string
+  type = string
 }
