@@ -74,7 +74,7 @@ jobs:
           TF_VAR_github_email: ${{ secrets.GHCR_EMAIL }}
           TF_VAR_frontend_host: ${{ vars.FRONTND_HOST}}
           TF_VAR_frontend_public_backend_url: ${{ vars.FRONTEND_PUBLIC_BACKEND_URL }}
-          TF_VAR_server_backend_url: ${{ vars.SERVER_BACKEND_URL }}
+          TF_VAR_frontend_server_backend_url: ${{ vars.SERVER_BACKEND_URL }}
           TF_VAR_keycloak_url: ${{ vars.KEYCLOAK_URL }}
           TF_VAR_keycloak_realm: ${{ vars.KEYCLOAK_REALM }}
           TF_VAR_keycloak_client_id: ${{ vars.KEYCLOAK_CLIENT_ID }}
