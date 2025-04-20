@@ -8,6 +8,7 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: jobstoryai/frontend
   DOCKERFILE: Docker/prod/Dockerfile
+  TF_DIR: terraform
 
 jobs:
   build:
@@ -38,3 +39,42 @@ jobs:
 
       - name: Push image
         run: docker push $REGISTRY/${{ env.IMAGE_NAME }}:latest
+
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2'
+        with:
+          project_id: '${{ vars.GCP_PROJECT_ID }}'
+          install_components: 'kubectl'
+
+      - name: Get GKE credentials
+        run: |
+          gcloud container clusters get-credentials ${{ vars.GKE_CLUSTER_NAME }} --region ${{ vars.GCP_REGION }}
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.4
+
+      - name: Terraform Init
+        working-directory: ${{ env.TF_DIR }}
+        run: terraform init
+
+      - name: Terraform Apply
+        working-directory: ${{ env.TF_DIR }}
+        run: terraform apply -auto-approve -input=false
+
+        env:
+          TF_VAR_github_username: ${{ vars.GHCR_USERNAME }}
+          TF_VAR_github_token: ${{ secrets.GHCR_TOKEN }}
+          TF_VAR_github_email: ${{ secrets.GHCR_EMAIL }}
+          TF_VAR_frontend_host: ${{ vars.FRONTND_HOST}}
+          TF_VAR_frontend_public_backend_url: ${{ vars.FRONTEND_PUBLIC_BACKEND_URL }}
+          TF_VAR_server_backend_url: ${{ vars.SERVER_BACKEND_URL }}
+          TF_VAR_keycloak_url: ${{ vars.KEYCLOAK_URL }}
+          TF_VAR_keycloak_realm: ${{ vars.KEYCLOAK_REALM }}
+          TF_VAR_keycloak_client_id: ${{ vars.KEYCLOAK_CLIENT_ID }}
