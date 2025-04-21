@@ -71,7 +71,7 @@ export const RecordsPageView = observer(
               icon={<PlusOutlined />}
               style={{
                 fontSize: 24,
-                position: "absolute",
+                position: "fixed",
                 bottom: 32,
                 right: 32,
                 zIndex: 100,
