@@ -89,24 +89,26 @@ const MobileMenu = ({
   menuItems: any;
 }) => {
   const [visible, setVisible] = useState(false);
-  const router = useRouter();
 
   return (
     <>
-      <Header>
+      <Header style={{ padding: "0 24px" }}>
         <Flex style={{ flexGrow: 1, height: "100%" }}>
           <Flex justify="flex-start" align="flex-start" style={{ flexGrow: 1 }}>
             <Link
               style={{
                 display: "flex",
                 alignItems: "center",
-                paddingTop: 6,
                 textAlign: "left",
                 height: "100%",
               }}
               href="/"
             >
-              <Title className={s.logo} level={4}>
+              <Title
+                className={s.logo}
+                level={4}
+                style={{ margin: 0, padding: 0 }}
+              >
                 {PROJECT_NAME}
               </Title>
             </Link>

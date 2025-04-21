@@ -67,9 +67,9 @@ export const RecordCard = ({ record, onDelete }: Props) => (
       <Col
         style={{
           marginTop: 12,
-          justifyContent: "flex-start",
           display: "flex",
           flex: 1,
+          justifyContent: "space-between", // Align company to the left and date to the right
         }}
       >
         {record.job?.company ? (
@@ -84,6 +84,8 @@ export const RecordCard = ({ record, onDelete }: Props) => (
           SCORE: {record.score}
         </Typography.Text>
       </Col>
+    </Row>
+    <Row>
       <Col
         style={{
           marginTop: 12,

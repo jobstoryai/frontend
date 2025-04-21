@@ -1,9 +1,9 @@
-import React, { ReactNode, useState } from "react";
-import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
-import { Button, Layout, theme } from "antd";
+import React, { ReactNode } from "react";
+import { Layout } from "antd";
 
 import { HeaderContainer } from "../header";
 
+import s from "./style.module.css";
 const { Header, Content } = Layout;
 
 interface Props {
@@ -13,10 +13,10 @@ interface Props {
 export const LayoutView = ({ children }: Props) => {
   return (
     <>
-      <Layout style={{ maxWidth: "100vw" }}>
+      <Layout className={s.container}>
         <HeaderContainer />
-        <Layout>
-          <Layout style={{ padding: "0 24px 24px" }}>
+        <Layout className={s.content_outter}>
+          <Layout className={s.content}>
             <Content
               style={{
                 padding: 24,

@@ -3,9 +3,8 @@ import {
   DeleteOutlined,
   EditOutlined,
   EllipsisOutlined,
-  TagFilled,
 } from "@ant-design/icons";
-import { Card, Col, Dropdown, Row, Space, Tag, Typography } from "antd";
+import { Card, Col, Dropdown, Row, Space, Typography } from "antd";
 import { format } from "date-fns";
 
 import { Record } from "repositories/record_repository";
@@ -68,7 +67,7 @@ export const RecordCard = ({ record, onEdit, onDelete }: Props) => (
       <Col
         style={{
           marginTop: 12,
-          justifyContent: "flex-start",
+          justifyContent: "space-between",
           display: "flex",
           flex: 1,
         }}
@@ -78,25 +77,9 @@ export const RecordCard = ({ record, onEdit, onDelete }: Props) => (
             @<strong>{record.job.company}</strong>
           </Typography.Paragraph>
         ) : null}
-        <Typography.Text style={{ color: "#888" }}>
+        <Typography.Text style={{ color: "#888", fontStyle: "italic" }}>
           {format(new Date(record.date), "yyyy-MM-dd")}
         </Typography.Text>
-      </Col>
-      <Col
-        style={{
-          marginTop: 12,
-          justifyContent: "flex-end",
-          display: "flex",
-          flex: 1,
-          marginRight: -8,
-        }}
-      >
-        {/* TODO: TAGS */}
-        {[].map((tag) => (
-          <Tag color="pink" key={tag}>
-            <TagFilled /> {tag}
-          </Tag>
-        ))}
       </Col>
     </Row>
   </Card>

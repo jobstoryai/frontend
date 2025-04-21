@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { PlusOutlined } from "@ant-design/icons";
 import { Affix, Button, Row, Typography } from "antd";
 import { observer } from "mobx-react-lite";
+import { useWindowSize } from "usehooks-ts";
 
 import { Job } from "repositories/job_repository";
 import {
@@ -40,24 +42,51 @@ export const RecordsPageView = observer(
   }: Props) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalData, setModalData] = useState<Record | null>(null);
+    const window = useWindowSize();
+    const isMobile = window.width <= 575;
+    console.log("is_mobile", isMobile);
 
     return (
       <>
         <Row
-          style={{ width: "100%", marginBottom: 16, marginRight: 32 }}
+          style={{ width: "100%", marginBottom: 16, marginRight: 0 }}
           justify="end"
         >
-          <Affix offsetTop={20}>
+          {!isMobile && (
+            <Affix offsetTop={20}>
+              <Button
+                type="primary"
+                onClick={() => {
+                  setModalData(null);
+                  setIsModalOpen(true);
+                }}
+              >
+                Add Record
+              </Button>
+            </Affix>
+          )}
+          {isMobile && (
             <Button
+              shape="circle"
+              icon={<PlusOutlined />}
+              style={{
+                fontSize: 24,
+                position: "absolute",
+                bottom: 32,
+                right: 32,
+                zIndex: 100,
+                width: 64,
+                height: 64,
+                marginRight: 0,
+                boxShadow: "2px 2px 8px rgba(0,0,0,0.4)",
+              }}
               type="primary"
               onClick={() => {
                 setModalData(null);
                 setIsModalOpen(true);
               }}
-            >
-              Add Record
-            </Button>
-          </Affix>
+            />
+          )}
         </Row>
         {data.items.length ? (
           data.items.map((record) => (
