@@ -117,12 +117,12 @@ export const WorkExperienceSettingsView = observer(
           onCancel={() => {
             setIsOpen(false);
           }}
-          onCreate={(payload) => {
-            onCreate(payload);
+          onCreate={async (payload) => {
+            await onCreate(payload);
             setIsOpen(false);
           }}
-          onUpdate={(id: number, payload) => {
-            onUpdate(id, payload);
+          onUpdate={async (id: number, payload) => {
+            await onUpdate(id, payload);
             setIsOpen(false);
           }}
         />

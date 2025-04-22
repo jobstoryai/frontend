@@ -1,5 +1,14 @@
-import { useEffect } from "react";
-import { Button, Col, DatePicker, Form, Input, Modal, Row } from "antd";
+import { useEffect, useState } from "react";
+import {
+  Button,
+  Checkbox,
+  Col,
+  DatePicker,
+  Form,
+  Input,
+  Modal,
+  Row,
+} from "antd";
 import { useForm } from "antd/lib/form/Form";
 import TextArea from "antd/lib/input/TextArea";
 import dayjs from "dayjs";
@@ -24,11 +33,13 @@ interface FormData {
   description: string;
   started: Date;
   finished: Date | null;
+  current_job: boolean;
 }
 
 export const WorkExperienceForm = observer(
   ({ isOpen, isCreating, onCancel, onCreate, onUpdate, data }: Props) => {
     const [form] = useForm();
+    const [isCurrentJob, setIsCurrentJob] = useState(false);
 
     useEffect(() => {
       if (data && form && isOpen) {
@@ -38,9 +49,21 @@ export const WorkExperienceForm = observer(
           description: data.description,
           started: dayjs(data.started),
           finished: data.finished ? dayjs(data.finished) : null,
+          current_job: data.finished === null,
         });
+        setIsCurrentJob(!data.finished);
       }
     }, [data, form, isOpen]);
+
+    const handleValuesChange = (changedValues: Partial<FormData>) => {
+      if (changedValues.current_job !== undefined) {
+        if (changedValues.current_job) {
+          form.setFieldsValue({ finished: null });
+        }
+      }
+    };
+
+    console.log("isCurrentJob", isCurrentJob);
 
     return (
       <Modal
@@ -55,7 +78,11 @@ export const WorkExperienceForm = observer(
           </Button>
         }
         open={isOpen}
-        onCancel={onCancel}
+        onCancel={() => {
+          form.resetFields();
+          setIsCurrentJob(false);
+          onCancel();
+        }}
       >
         <Form<FormData>
           form={form}
@@ -77,19 +104,59 @@ export const WorkExperienceForm = observer(
                   finished: dayjs(),
                 }
           }
-          onFinish={(payload) => {
-            const _payload = { ...payload, finished: payload.finished ?? null };
-            data?.id ? onUpdate(data.id, _payload) : onCreate(_payload);
+          onFinish={async (payload) => {
+            const { current_job, ..._payload } = {
+              ...payload,
+              finished: payload.finished ?? null,
+            };
+
+            try {
+              data?.id
+                ? await onUpdate(data.id, _payload as any)
+                : await onCreate(_payload as any);
+              form.resetFields();
+              setIsCurrentJob(false);
+            } catch (e) {
+              console.error(e);
+            }
           }}
+          onValuesChange={handleValuesChange}
           autoComplete="off"
         >
-          <Form.Item name="company" label="Company">
+          <Form.Item
+            name="company"
+            label="Company"
+            rules={[
+              {
+                required: true,
+                message: "Required",
+              },
+            ]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item name="position" label="Position">
+          <Form.Item
+            name="position"
+            label="Position"
+            rules={[
+              {
+                required: true,
+                message: "Required",
+              },
+            ]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item name="description" label="Description">
+          <Form.Item
+            name="description"
+            label="Description"
+            rules={[
+              {
+                required: true,
+                message: "Required",
+              },
+            ]}
+          >
             <TextArea showCount maxLength={2000} />
           </Form.Item>
 
@@ -100,6 +167,12 @@ export const WorkExperienceForm = observer(
                 label="Started"
                 labelCol={{ xs: { span: 8 } }}
                 wrapperCol={{ xs: { span: 16 } }}
+                rules={[
+                  {
+                    required: true,
+                    message: "Required",
+                  },
+                ]}
               >
                 <DatePicker />
               </Form.Item>
@@ -110,8 +183,48 @@ export const WorkExperienceForm = observer(
                 label="Finished"
                 labelCol={{ xs: { span: 8 } }}
                 wrapperCol={{ xs: { span: 16 } }}
+                rules={[
+                  {
+                    required: !isCurrentJob,
+                    message: "Required",
+                  },
+                ]}
               >
-                <DatePicker />
+                <DatePicker
+                  placeholder={
+                    isCurrentJob ? "Currently employed" : "Select date"
+                  }
+                  disabled={isCurrentJob}
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={24}>
+              <Form.Item
+                name="current_job"
+                label="Currently Employed"
+                labelCol={{ span: 8 }}
+                wrapperCol={{ span: 16 }}
+                valuePropName="checked"
+              >
+                <Checkbox
+                  checked={isCurrentJob}
+                  onChange={(e: { target: { checked: boolean } }) => {
+                    const isChecked = e.target.checked;
+                    setIsCurrentJob(e.target.checked);
+
+                    if (isChecked) {
+                      form.setFields([
+                        {
+                          name: "finished",
+                          errors: [],
+                          value: null,
+                        },
+                      ]);
+                    }
+                  }}
+                />
               </Form.Item>
             </Col>
           </Row>

@@ -50,6 +50,7 @@ export class WorkExperienceSettingsController {
       });
     } catch (e) {
       toastStore.show("error", "Something went wrong");
+      throw new Error("Store Error");
     } finally {
       runInAction(() => {
         this.isCreating = false;
