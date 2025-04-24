@@ -5,9 +5,10 @@ networks:
 services:
   frontend:
     restart: unless-stopped
-    image: node:22-alpine
+    image: node:22
     command: sh -c "corepack enable -- && yarn dev"
     working_dir: /app
+    user: "1000:1000"
 
     environment:
       NEXT_PUBLIC_BACKEND_URL: http://localhost:4400
