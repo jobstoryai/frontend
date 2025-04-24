@@ -35,9 +35,6 @@ resource "kubernetes_deployment_v1" "frontend" {
 
           port { container_port = 3000 }
 
-          command = ["/bin/sh", "-c"]
-          args    = ["yarn build -- --no-lint && yarn start"]
-
           port {
             container_port = 3000
           }
