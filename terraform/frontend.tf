@@ -9,6 +9,11 @@ resource "kubernetes_deployment_v1" "frontend" {
     labels    = { app = "jobstory-frontend" }
   }
 
+  timeouts {
+    create = "5m"
+    update = "5m"
+  }
+
   spec {
     replicas = 1
 
