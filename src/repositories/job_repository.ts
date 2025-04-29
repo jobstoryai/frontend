@@ -1,4 +1,5 @@
 import { pagination, repositories, serializers } from "client-rest-framework";
+import { NumberField } from "client-rest-framework/build/main/serializers";
 
 import { GetDomainModel, GetRequestPayload } from "types";
 
@@ -33,6 +34,7 @@ export class JobSerializer<
   description = new serializers.StringField();
   started = new DateOnlyField();
   finished = new DateOnlyOptionalField();
+  records = new NumberField({ readonly: true });
   created_at = new serializers.DateField({ readonly: true });
   updated_at = new serializers.DateField({ readonly: true });
 }

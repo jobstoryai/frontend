@@ -1,11 +1,14 @@
 import React from "react";
 
+import { PageWrapper } from "components/page_wrapper";
 import { AuthContainer } from "containers/auth";
-import { SettingsPageContainer } from "containers/settings_page";
+import { ProfileSettingsContainer } from "containers/profile_settings";
 
 const Page = () => (
   <AuthContainer redirectUnauthenticated="/login">
-    <SettingsPageContainer />
+    <PageWrapper>
+      <ProfileSettingsContainer />
+    </PageWrapper>
   </AuthContainer>
 );
 

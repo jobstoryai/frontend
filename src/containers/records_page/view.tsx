@@ -1,47 +1,25 @@
-import { useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
-import { Affix, Button, Row, Typography } from "antd";
+import { Affix, Button, Empty, Row, Typography } from "antd";
 import { observer } from "mobx-react-lite";
 import { useWindowSize } from "usehooks-ts";
 
-import { Job } from "repositories/job_repository";
-import {
-  Record,
-  RecordPayload,
-  RecordPayloadAnyJob,
-} from "repositories/record_repository";
+import { Record, RecordPayloadAnyJob } from "repositories/record_repository";
 
 import { MayBeAsync, Paginated } from "types";
 
-import { RecordFormModal } from "./components/form";
 import { RecordCard } from "./components/record_card";
 
 interface Props {
-  isCreating: boolean;
   isLoadingNextPage: boolean;
-  isLoadingJobs: boolean;
-
+  onOpenRecordModal: (args?: { data: Record }) => void;
   data: Paginated<Record>;
-  jobs: Job[];
 
-  onCreate: (payload: RecordPayloadAnyJob) => MayBeAsync<void>;
   onUpdate: (id: number, payload: RecordPayloadAnyJob) => MayBeAsync<void>;
   onDelete: (id: number) => MayBeAsync<void>;
 }
 
 export const RecordsPageView = observer(
-  ({
-    isLoadingNextPage,
-    data,
-    jobs,
-    isLoadingJobs,
-    isCreating,
-    onCreate,
-    onUpdate,
-    onDelete,
-  }: Props) => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [modalData, setModalData] = useState<Record | null>(null);
+  ({ data, onOpenRecordModal, onDelete }: Props) => {
     const window = useWindowSize();
     const isMobile = window.width <= 575;
     console.log("is_mobile", isMobile);
@@ -57,8 +35,7 @@ export const RecordsPageView = observer(
               <Button
                 type="primary"
                 onClick={() => {
-                  setModalData(null);
-                  setIsModalOpen(true);
+                  onOpenRecordModal();
                 }}
               >
                 Add Record
@@ -82,8 +59,7 @@ export const RecordsPageView = observer(
               }}
               type="primary"
               onClick={() => {
-                setModalData(null);
-                setIsModalOpen(true);
+                onOpenRecordModal();
               }}
             />
           )}
@@ -95,48 +71,30 @@ export const RecordsPageView = observer(
               record={record}
               onDelete={onDelete}
               onEdit={() => {
-                setModalData(record);
-                setIsModalOpen(true);
+                onOpenRecordModal({ data: record });
               }}
             />
           ))
         ) : (
-          <Typography.Paragraph
-            style={{
-              fontSize: 16,
-              color: "#888",
-              padding: "80px 0",
-            }}
+          <Empty
+            styles={{ image: { height: 60 } }}
+            style={{ margin: "40px 0 60px" }}
+            description={
+              <Typography.Text type="secondary">
+                You don&apos;t have any records yet. Try to add one
+              </Typography.Text>
+            }
           >
-            You don&apos;t have any records yet. Try to add one
-          </Typography.Paragraph>
+            <Button
+              type="primary"
+              onClick={() => {
+                onOpenRecordModal();
+              }}
+            >
+              Add Record
+            </Button>
+          </Empty>
         )}
-        <RecordFormModal
-          isOpen={isModalOpen}
-          data={modalData}
-          jobs={jobs}
-          isLoadingJobs={isLoadingJobs}
-          isCreating={isCreating}
-          onCreate={async (payload) => {
-            try {
-              await onCreate(payload);
-              setIsModalOpen(false);
-            } catch (e) {
-              console.error(e);
-            }
-          }}
-          onUpdate={async (id, payload) => {
-            try {
-              await onUpdate(id, payload);
-              setIsModalOpen(false);
-            } catch (e) {
-              console.error(e);
-            }
-          }}
-          onCancel={() => {
-            setIsModalOpen(false);
-          }}
-        />
       </>
     );
   },

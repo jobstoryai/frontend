@@ -166,7 +166,7 @@ export const HeaderView = observer(
           ? {
               key: "/cvs",
               icon: <BookFilled />,
-              label: "CVs",
+              label: "Resumes",
               onClick: () => router.push(`/cvs`),
             }
           : null,
@@ -180,18 +180,19 @@ export const HeaderView = observer(
           : null,
         isLoggedIn
           ? {
-              key: "/profile",
+              key: "/jobs",
               icon: <ProfileFilled />,
-              label: "Profile",
-              onClick: () => router.push(`/profile`),
+              label: "Experience",
+              onClick: () => router.push(`/jobs`),
             }
           : null,
         isLoggedIn && !isMobile && !collapsed
           ? {
-              key: "user",
+              key: "/profile",
               icon: <UserOutlined />,
               label: user?.email,
-              style: { pointerEvents: "none", marginTop: 32 },
+              onClick: () => router.push(`/profile`),
+              style: { marginTop: 32 },
             }
           : null,
         isLoggedIn

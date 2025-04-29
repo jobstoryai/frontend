@@ -1,34 +1,38 @@
 import React, { useEffect } from "react";
+import { CvsController } from "controllers/cvs_controller";
 import { observer } from "mobx-react-lite";
 import { useRouter } from "next/router";
 
+import { Loader } from "components/Loader";
 import { useController } from "lib/use_controller";
 
-import { CvsPageController } from "./controller";
 import { CvsPageView } from "./view";
 
 export interface Props {}
 
 export const CvsPageContainer = observer(({}: Props) => {
-  const controller = useController(CvsPageController, {});
+  const cvsController = useController(CvsController);
   const router = useRouter();
 
   useEffect(() => {
-    controller.load(1);
-  }, [controller]);
+    cvsController.load();
+  }, [cvsController]);
+
+  if (cvsController.isLoading) {
+    return <Loader />;
+  }
 
   return (
     <CvsPageView
-      isLoading={controller.isLoading}
-      data={controller.data}
-      onDelete={controller.delete}
+      isLoading={cvsController.isLoading}
+      data={cvsController.data}
+      onDelete={cvsController.delete}
       onCreate={() => {
-        router.push(`/cvs/new`);
+        // TODO: CVS modal
       }}
       onEdit={(id: number) => {
         router.push(`/cvs/${id}`);
       }}
-      onDeactivate={() => {}}
     />
   );
 });

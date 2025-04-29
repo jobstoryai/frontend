@@ -13,10 +13,11 @@ export class HTTPClient extends api.AxiosHTTPClient {
   }
 
   onUnauthenticate = () => {
+    debugger;
     tokenStore.remove();
 
     if (!isServer() && window.location.pathname !== "/login") {
-      Router.push("/login");
+      window.location.replace("/login");
     }
   };
 }

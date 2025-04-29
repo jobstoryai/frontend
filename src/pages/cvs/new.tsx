@@ -7,7 +7,7 @@ import { CvPageContainer } from "containers/cv_page";
 const Page = () => {
   return (
     <AuthContainer redirectUnauthenticated="/login">
-      <CvPageContainer />
+      <CvPageContainer cvId={0} />
     </AuthContainer>
   );
 };

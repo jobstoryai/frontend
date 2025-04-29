@@ -1,5 +1,6 @@
-import React from "react";
-import { Button, Form, Input } from "antd";
+import React, { useState } from "react";
+import { Button, Card, Form, Input } from "antd";
+import { useForm } from "antd/lib/form/Form";
 import { observer } from "mobx-react-lite";
 
 import { PublicUser } from "repositories/user_repository";
@@ -22,35 +23,60 @@ interface FormValues {
 }
 
 export const ProfileSettingsView = observer(
-  ({ isUpdating, user, onSubmit }: Props) => {
-    return (
-      <Form
-        labelCol={{ span: 4 }}
-        wrapperCol={{ span: 20 }}
-        initialValues={{
-          first_name: user.first_name,
-          last_name: user.last_name,
-          about: user.about,
-        }}
-        onFinish={onSubmit}
-        autoComplete="off"
-      >
-        <Form.Item name="first_name" label="First Name">
-          <Input />
-        </Form.Item>
-        <Form.Item name="last_name" label="Last Name">
-          <Input />
-        </Form.Item>
-        <Form.Item name="about" label="About">
-          <AboutInput />
-        </Form.Item>
+  ({ user, onSubmit, isUpdating }: Props) => {
+    const [disabledSave, setDisabledSave] = useState(true);
+    const [form] = useForm();
 
-        <Form.Item label={null}>
-          <Button loading={isUpdating} type="primary" htmlType="submit">
+    const handleFormChange = () => {
+      const hasErrors = form
+        .getFieldsError()
+        .some(({ errors }) => errors.length);
+      setDisabledSave(hasErrors);
+    };
+
+    return (
+      <Card
+        title="Profile Settings"
+        extra={[
+          <Button
+            key={"submit-button"}
+            loading={isUpdating}
+            disabled={disabledSave}
+            type="primary"
+            htmlType="submit"
+            onClick={() => {
+              form.submit();
+              setDisabledSave(true);
+            }}
+          >
             Save
-          </Button>
-        </Form.Item>
-      </Form>
+          </Button>,
+        ]}
+      >
+        <Form
+          onFieldsChange={handleFormChange}
+          form={form}
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 20 }}
+          initialValues={{
+            first_name: user.first_name || "",
+            last_name: user.last_name || "",
+            about: user.about || "",
+          }}
+          onFinish={onSubmit}
+          autoComplete="off"
+        >
+          <Form.Item name="first_name" label="First Name">
+            <Input placeholder="John" style={{ maxWidth: 250 }} />
+          </Form.Item>
+          <Form.Item name="last_name" label="Last Name">
+            <Input placeholder="Doe" style={{ maxWidth: 250 }} />
+          </Form.Item>
+          <Form.Item name="about" label="About">
+            <AboutInput />
+          </Form.Item>
+        </Form>
+      </Card>
     );
   },
 );
