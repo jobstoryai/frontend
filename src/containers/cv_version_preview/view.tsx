@@ -47,30 +47,32 @@ export const CvVersionPreviewView = observer(({ data, user }: Props) => {
           {data.raw_response?.model ? (
             <Collapse
               style={{ marginBottom: 8 }}
-              items={[
-                {
-                  key: "debug",
-                  label: "Debug Info",
-                  children: (
-                    <pre
-                      style={{
-                        width: "100%",
-                        padding: 0,
-                      }}
-                    >{`MODEL: ${data.raw_response.model}
+              items={
+                [
+                  {
+                    key: "debug",
+                    label: "Debug Info",
+                    children: (
+                      <pre
+                        style={{
+                          width: "100%",
+                          padding: 0,
+                        }}
+                      >{`MODEL: ${data.raw_response.model}
 EVAL_DURATION: ${formatDuration(data.raw_response.eval_duration * 1000)}`}</pre>
-                  ),
-                },
-                think
-                  ? {
-                      key: "think",
-                      label: "Think",
-                      children: (
-                        <Typography.Paragraph>{think}</Typography.Paragraph>
-                      ),
-                    }
-                  : null,
-              ].filter((i) => i !== null) as any}
+                    ),
+                  },
+                  think
+                    ? {
+                        key: "think",
+                        label: "Think",
+                        children: (
+                          <Typography.Paragraph>{think}</Typography.Paragraph>
+                        ),
+                      }
+                    : null,
+                ].filter((i) => i !== null) as any
+              }
             />
           ) : null}
           <Typography.Paragraph>{data?.json.about}</Typography.Paragraph>

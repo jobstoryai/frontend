@@ -87,7 +87,12 @@ EVAL_DURATION: ${formatDuration(data.raw_response.eval_duration * 1000)}`}</pre>
             <Typography.Paragraph>
               {exp.achievements.length ? (
                 <>
-                  <strong>Achievements</strong>:<br />
+                  <Typography.Title
+                    style={{ fontSize: 15, marginTop: 16 }}
+                    level={5}
+                  >
+                    Achievements:
+                  </Typography.Title>
                   <ul>
                     {exp.achievements.map((achievement: string) => (
                       <li key={achievement}>{achievement}</li>

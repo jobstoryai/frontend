@@ -40,7 +40,7 @@ export const CvPageView = observer(
           extra={[
             latestVersion?.needs_update || true ? (
               <Button loading={isUpdating} onClick={onUpdate} type="primary">
-                Update
+                Generate
               </Button>
             ) : (
               <Tooltip title="Your resume reflects the latest data. Add or update records, jobs, or settings to enhance it.">
