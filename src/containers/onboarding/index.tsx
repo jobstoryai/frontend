@@ -10,6 +10,7 @@ import { useController } from "lib/use_controller";
 
 import { OnboardingController } from "./controller";
 import { OnboardingView } from "./view";
+import { version } from "os";
 
 export interface Props {}
 
@@ -35,7 +36,7 @@ export const OnboardingContainer = observer(({}: Props) => {
     const cvs = controller.state.cvs;
     const versions = controller.state.cv_versions;
 
-    if (!controller.isOnboardingFinished) {
+    if (!jobs && !controller.isOnboardingFinished) {
       controller.openModal("onboarding");
       return;
     }
@@ -70,6 +71,10 @@ export const OnboardingContainer = observer(({}: Props) => {
     if (jobs >= 1 && records >= 3 && cvs >= 1 && versions === 1) {
       controller.openModal("onboarding-finished");
       return;
+    }
+
+    if (jobs >= 1 && records >= 3 && cvs >= 1 && versions >= 1) {
+      controller.setCompleted(true);
     }
   }, [
     controller.state.jobs,

@@ -41,8 +41,6 @@ export class OnboardingController {
       stores: { onboardingStore },
     } = this.appStore;
     return onboardingStore.load;
-
-
   }
 
   get modal() {
@@ -71,7 +69,7 @@ export class OnboardingController {
       stores: { onboardingStore },
     } = this.appStore;
     return onboardingStore.setCompleted(v);
-  }
+  };
 
   get isCompleted() {
     const {
