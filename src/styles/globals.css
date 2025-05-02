@@ -18,3 +18,21 @@ blockquote {
 blockquote p {
   display: inline;
 }
+
+*::-webkit-scrollbar {
+  width: 8px; /* Width of the vertical scrollbar */
+  height: 8px; /* Height of the horizontal scrollbar */
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent; /* Background of the scrollbar track */
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2); /* Color of the scrollbar handle */
+  border-radius: 10px; /* Roundness of the scrollbar handle edges */
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.4); /* Color when hovering over the scrollbar */
+}

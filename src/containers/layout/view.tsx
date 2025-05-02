@@ -1,10 +1,15 @@
 import React, { ReactNode } from "react";
 import { Layout } from "antd";
 
+import { JobFormModalContainer } from "containers/job_form_modal";
+import { OnboardingContainer } from "containers/onboarding";
+import { OnboardingProgressContainer } from "containers/onboarding_progress";
+import { RecordFormModalContainer } from "containers/record_form_modal";
+
 import { HeaderContainer } from "../header";
 
 import s from "./style.module.css";
-const { Header, Content } = Layout;
+const { Content } = Layout;
 
 interface Props {
   children: ReactNode;
@@ -25,8 +30,14 @@ export const LayoutView = ({ children }: Props) => {
                 background: "transparent",
               }}
             >
-              {children}
+              <>
+                <OnboardingProgressContainer />
+                {children}
+              </>
             </Content>
+            <OnboardingContainer />
+            <RecordFormModalContainer />
+            <JobFormModalContainer />
           </Layout>
         </Layout>
       </Layout>

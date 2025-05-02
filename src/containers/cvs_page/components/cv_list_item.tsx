@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import {
-    CheckCircleFilled,
+  CheckCircleFilled,
   CheckCircleOutlined,
   DeleteOutlined,
   EditFilled,
@@ -23,11 +23,10 @@ import s from "./cv_list_item.module.css";
 interface Props {
   item: Cv;
   onEdit: (id: number) => MayBeAsync<void>;
-  onDeactivate: (id: number) => MayBeAsync<void>;
   onDelete: (id: number) => MayBeAsync<void>;
 }
 
-export const CvListItem = ({ item, onEdit, onDeactivate, onDelete }: Props) => {
+export const CvListItem = ({ item, onEdit, onDelete }: Props) => {
   const router = useRouter();
 
   const goToCvPage = () => {
@@ -49,12 +48,6 @@ export const CvListItem = ({ item, onEdit, onDeactivate, onDelete }: Props) => {
                 key: "edit",
                 icon: <EditOutlined />,
                 onClick: () => onEdit(item.id),
-              },
-              {
-                label: "Deactivate",
-                key: "Deactivate",
-                icon: <PauseOutlined />,
-                onClick: () => onDeactivate(item.id),
               },
               { type: "divider" },
               {
@@ -79,7 +72,7 @@ export const CvListItem = ({ item, onEdit, onDeactivate, onDelete }: Props) => {
         className={s.item_inner}
         // @ts-ignore
         onClick={goToCvPage}
-        title={item.title}
+        title={`${item.position} @ ${item.company}`}
         description={format(item.created_at, "yyyy-MM-dd HH:mm")}
       />
     </List.Item>

@@ -70,11 +70,13 @@ export class RecordsStore {
   };
 
   async create(payload: RecordPayload) {
-    const { repos } = this.appStore;
+    const { repos, stores } = this.appStore;
+    const { onboardingStore } = stores;
 
     this.state.isCreating = true;
     try {
       const res = await repos.records.create(payload);
+      onboardingStore.load();
 
       runInAction(() => {
         this.data.count = this.data.count + 1;
@@ -90,11 +92,13 @@ export class RecordsStore {
   }
 
   async update(id: number, payload: RecordPayload) {
-    const { repos } = this.appStore;
+    const { repos, stores } = this.appStore;
+    const { onboardingStore } = stores;
 
     try {
       this.state.isCreating = true;
       const updatedRecord = await repos.records.update(id, payload);
+      onboardingStore.load();
 
       runInAction(() => {
         const index = this.data.items.findIndex((item) => item.id === id);
@@ -109,8 +113,10 @@ export class RecordsStore {
   }
 
   async delete(id: number) {
-    const { repos } = this.appStore;
+    const { repos, stores } = this.appStore;
+    const { onboardingStore } = stores;
     await repos.records.delete(id);
+    onboardingStore.load();
 
     runInAction(() => {
       this.data.count = this.data.count + 1;

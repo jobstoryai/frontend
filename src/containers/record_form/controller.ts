@@ -23,12 +23,25 @@ export class RecordFormController {
   };
 
   loadJobs = async () => {
-    const { repos } = this.appStore;
+    const { jobsStore } = this.appStore.stores;
     this.isLoadingJobs = true;
-    const [jobs, _] = await repos.jobs.list();
+    await jobsStore.loadCacheIfNeeded();
 
     runInAction(() => {
-      this.jobs = jobs;
+      this.jobs = jobsStore.data.items;
+      let currentJob = this.jobs.find((job) => !job.finished);
+
+      if (!currentJob) {
+        currentJob = this.jobs.reduce(
+          (latest, job) => {
+            return !latest || new Date(job.started) > new Date(latest.started)
+              ? job
+              : latest;
+          },
+          null as Job | null,
+        )!;
+      }
+
       this.isLoadingJobs = false;
     });
   };

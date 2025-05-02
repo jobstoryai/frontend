@@ -7,9 +7,11 @@ import { API } from "./apis/api";
 export interface CvDTO {
   id: number;
 
-  title: string;
+  position: string;
+  company: string;
   job_description: string;
   status: string;
+  latest_version: string | null;
 
   created_at: string;
   updated_at: string;
@@ -40,7 +42,8 @@ export class CvSerializer<
 > extends serializers.ModelSerializer<CvDTO, R, M> {
   id = new serializers.NumberField({ readonly: true });
 
-  title = new serializers.EnumField<string>();
+  position = new serializers.StringField();
+  company = new serializers.StringField();
   job_description = new serializers.StringField();
   status = new serializers.EnumField<
     "PENDING" | "PROCESSING" | "ACTIVE" | "INACTIVE",
@@ -51,6 +54,9 @@ export class CvSerializer<
   created_at = new serializers.DateField({ readonly: true });
   updated_at = new serializers.DateField({ readonly: true });
   versions = new CvVersionMinimalSerializer({ readonly: true, many: true });
+  latest_version = new serializers.EnumField<string | null, true, false>({
+    readonly: true,
+  });
 }
 
 export class CvsApiRepository extends repositories.APIRepository {

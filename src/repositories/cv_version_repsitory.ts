@@ -1,12 +1,16 @@
 import { repositories, serializers } from "client-rest-framework";
+import { BooleanField } from "client-rest-framework/build/main/serializers";
 
 import { API } from "./apis/api";
 
 export interface CvVersionDTO {
   id: number;
   is_active: boolean;
+  first_name: string;
+  last_name: string;
   json: string;
   raw_response: string;
+  needs_update: boolean
 }
 
 export type CvVersion = ReturnType<CvVersionSerializer["fromDTO"]>;
@@ -31,8 +35,12 @@ export class CvVersionSerializer<
   is_active = new serializers.BooleanField();
   cv = new serializers.NumberField();
 
+  first_name = new serializers.StringField({ readonly: true });
+  last_name = new serializers.StringField({ readonly: true });
+
   json = new JsonField({ readonly: true });
   raw_response = new JsonField({ readonly: true });
+  needs_update = new BooleanField({ readonly: true });
 
   created_at = new serializers.DateField({ readonly: true });
   updated_at = new serializers.DateField({ readonly: true });

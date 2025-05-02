@@ -1,21 +1,22 @@
 import React, { useEffect } from "react";
+import { RecordModalController } from "controllers/record_modal_controller";
+import { RecordsController } from "controllers/records_controller";
 import { observer } from "mobx-react-lite";
 
 import { Loader } from "components/Loader";
 import { PageWrapper } from "components/page_wrapper";
 import { useController } from "lib/use_controller";
 
-import { RecordsPageController } from "./controller";
 import { RecordsPageView } from "./view";
 
 export interface Props {}
 
 export const RecordsPageContainer = observer(({}: Props) => {
-  const controller = useController(RecordsPageController, {});
+  const recordModalController = useController(RecordModalController)
+  const controller = useController(RecordsController);
 
   useEffect(() => {
     controller.load();
-    controller.loadJobs();
   }, [controller]);
 
   if (controller.isLoading) {
@@ -26,11 +27,8 @@ export const RecordsPageContainer = observer(({}: Props) => {
     <PageWrapper>
       <RecordsPageView
         isLoadingNextPage={false}
-        isLoadingJobs={controller.isLoadingJobs}
-        jobs={controller.jobs}
+        onOpenRecordModal={recordModalController.openModal}
         data={controller.data}
-        isCreating={controller.isCreating}
-        onCreate={controller.create}
         onUpdate={controller.update}
         onDelete={controller.delete}
       />

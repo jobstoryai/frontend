@@ -3,6 +3,7 @@ import router from "next/router";
 
 import { AppStore } from "stores/app_store";
 import { Cv, CvPayload, CvsApiRepository } from "repositories/cv_repository";
+import { CvVersion } from "repositories/cv_version_repsitory";
 
 interface Options {
   appStore: AppStore;
@@ -10,101 +11,56 @@ interface Options {
 
 export class CvPageController {
   private appStore: AppStore;
-  isLoading = false;
+  isLoading = true;
   isUpdating = false;
   isCreatingVersion = false;
   data: Cv | null = null;
+  latestVersion: CvVersion | null;
 
   constructor(options: Options) {
     this.appStore = options.appStore;
     makeAutoObservable(this);
   }
 
-  async load(id: number) {
-    const { repos } = this.appStore;
-    this.isLoading = true;
+  get isCvLoading() {
+    const {
+      stores: { cvsStore, cvVersionsStore },
+    } = this.appStore;
 
-    const cv = await repos.cvs.get(id);
+    return (
+      cvsStore.state.isLoadingOne ||
+      cvVersionsStore.state.isLoadingOne ||
+      this.isLoading
+    );
+  }
+
+  async load(id: number) {
+    const {
+      stores: { cvsStore, cvVersionsStore },
+    } = this.appStore;
+    this.isLoading = true;
+    const cv = await cvsStore.get(id);
+
+    if (!cv) {
+      return; // TODO: not found
+    }
+
+    const { latest_version } = cv;
+
+    let version: CvVersion | null = null;
+    if (latest_version) {
+      const _version = await cvVersionsStore.get(latest_version as any);
+      if (_version) {
+        version = _version;
+      }
+    }
 
     runInAction(() => {
       this.data = cv;
+      this.latestVersion = version;
       this.isLoading = false;
     });
   }
-
-  create = async (payload: CvPayload) => {
-    const {
-      repos,
-      stores: { toastStore },
-    } = this.appStore;
-    this.isUpdating = true;
-
-    try {
-      const cv = await repos.cvs.create(payload);
-      runInAction(() => {
-        this.data = cv;
-        toastStore.show("success", "Settings has been updated!");
-        router.replace(`/cvs/${cv.id}`);
-      });
-    } catch (e) {
-      console.error(e);
-      toastStore.show("error", "Something went wrong");
-    } finally {
-      runInAction(() => {
-        this.isUpdating = false;
-      });
-    }
-  };
-
-  update = async (id: number, payload: CvPayload) => {
-    const {
-      repos,
-      stores: { toastStore },
-    } = this.appStore;
-    this.isUpdating = true;
-
-    try {
-      const cv = await repos.cvs.update(id, payload);
-      runInAction(() => {
-        this.data = cv;
-        toastStore.show("success", "Settings has been updated!");
-      });
-    } catch (e) {
-      console.error(e);
-      toastStore.show("error", "Something went wrong");
-    } finally {
-      runInAction(() => {
-        this.isUpdating = false;
-      });
-    }
-  };
-
-  delete = async (id: number) => {
-    const {
-      repos,
-      stores: { toastStore },
-    } = this.appStore;
-    try {
-      const confirmed = confirm(
-        "Do you really want to delete this CV? This can't be undone",
-      );
-
-      if (!confirmed) {
-        return;
-      }
-
-      await repos.cvs.delete(id);
-      runInAction(() => {
-        toastStore.show("success", "CV has been deleted!");
-        router.push("/cvs/");
-      });
-    } catch (e) {
-      console.error(e);
-      toastStore.show("error", "Something went wrong");
-    } finally {
-      runInAction(() => {});
-    }
-  };
 
   createVerion = async () => {
     const {
@@ -121,8 +77,17 @@ export class CvPageController {
       this.isCreatingVersion = true;
       await repos.cvVersions.create({ cv: id, is_active: false });
       const updatedCv = await repos.cvs.get(id);
+      let version: CvVersion | null = null;
+
+      if (updatedCv.latest_version) {
+        version = await repos.cvVersions.get(updatedCv.latest_version as any);
+      }
+
       runInAction(() => {
         this.data!.versions = updatedCv.versions;
+        this.data!.latest_version = updatedCv.latest_version;
+        this.latestVersion = version;
+        toastStore.show("success", "Resume was updated!");
       });
     } catch (e) {
       console.error(e);

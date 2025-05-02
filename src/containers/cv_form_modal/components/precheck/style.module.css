@@ -1,0 +1,9 @@
+.dropdown {
+  cursor: pointer;
+}
+
+.dropdown:hover {
+  opacity: 0.6;
+}
+
+

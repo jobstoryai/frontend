@@ -1,6 +1,7 @@
 import React from "react";
 import { useRouter } from "next/router";
 
+import { PageWrapper } from "components/page_wrapper";
 import { AuthContainer } from "containers/auth";
 import { CvPageContainer } from "containers/cv_page";
 
@@ -14,7 +15,9 @@ const Page = () => {
 
   return (
     <AuthContainer redirectUnauthenticated="/login">
-      <CvPageContainer cvId={Number(cv_id)} />
+      <PageWrapper>
+        <CvPageContainer cvId={Number(cv_id)} />
+      </PageWrapper>
     </AuthContainer>
   );
 };
