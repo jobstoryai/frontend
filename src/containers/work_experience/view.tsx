@@ -133,18 +133,19 @@ export const WorkExperienceView = observer(
                       }
                       description={
                         <>
+                          <Typography.Paragraph
+                            type={job.records < 5 ? "danger" : "success"}
+                            style={{
+                              margin: "-4px 0 12px",
+                              paddingRight: 8,
+                              opacity: 0.75,
+                            }}
+                          >
+                            Records: {job.records}
+                          </Typography.Paragraph>
+
                           {job.description.split("\n").map((paragraph) => (
                             <>
-                              <Typography.Paragraph
-                                type={job.records < 5 ? "danger" : "success"}
-                                style={{
-                                  margin: "-4px 0 12px",
-                                  paddingRight: 8,
-                                  opacity: 0.75,
-                                }}
-                              >
-                                Records: {job.records}
-                              </Typography.Paragraph>
                               <Typography.Paragraph
                                 style={{ margin: "4px 0", paddingRight: 8 }}
                               >
