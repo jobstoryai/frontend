@@ -1,4 +1,4 @@
-import { createMockRepo } from "../test/utils/create_mock_repo";
+import { createMockRepo } from "../__tests__/utils/create_mock_repo";
 
 import { EntityStore } from "./entity_store";
 
