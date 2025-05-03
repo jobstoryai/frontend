@@ -67,16 +67,18 @@ export class CvVersionController {
     }
 
     try {
-      const version = await cvVersionsStore.create({ cv: id, is_active: false })
+      const version = await cvVersionsStore.create({
+        cv: id,
+        is_active: false,
+      });
       runInAction(() => {
         this.data!.versions.push(version);
         this.data!.latest_version = version.id;
         this.latestVersion = version;
-        toastStore.show("success", "Resume was updated!");
-      })
+        toastStore.show("success", "Resume was generated!");
+      });
     } catch (e) {
       console.error(e);
     }
   };
 }
-
