@@ -1,5 +1,5 @@
 import React from "react";
-import { PlusOutlined, RedoOutlined } from "@ant-design/icons";
+import { RedoOutlined } from "@ant-design/icons";
 import { Alert, Button, Card, Empty, Tabs, Tooltip, Typography } from "antd";
 import { observer } from "mobx-react-lite";
 

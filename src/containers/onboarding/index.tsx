@@ -5,12 +5,10 @@ import { RecordModalController } from "controllers/record_modal_controller";
 import { observer } from "mobx-react-lite";
 import { useRouter } from "next/router";
 
-import { useStore } from "stores/use_store";
 import { useController } from "lib/use_controller";
 
 import { OnboardingController } from "./controller";
 import { OnboardingView } from "./view";
-import { version } from "os";
 
 export interface Props {}
 

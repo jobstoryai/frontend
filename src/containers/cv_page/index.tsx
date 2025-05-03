@@ -26,7 +26,11 @@ export const CvPageContainer = observer(({ cvId }: Props) => {
 
   return (
     <CvPageView
-      onUpdate={cvVersionController.create}
+      onUpdate={async () => {
+        // NOTE: A fix of not-invalidated react component after update
+        await cvVersionController.create()
+        await cvVersionController.load(cvId)
+      }}
       isUpdating={cvVersionController.isCreatingVersion}
       cvId={cvId}
       cv={cvVersionController.data!}
