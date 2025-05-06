@@ -334,7 +334,7 @@ export const OnboardingView = observer(
               </Typography.Paragraph>
             }
             button={{
-              text: "Genarete Resume",
+              text: "Generate Resume",
               onClick: () => {
                 onOpenCvPreview();
               },
