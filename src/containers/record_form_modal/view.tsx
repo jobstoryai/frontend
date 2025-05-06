@@ -66,12 +66,10 @@ export const RecordFormModalView = observer(
     }, [data, form, isOpen]);
 
     useEffect(() => {
-      if (form && isOpen) {
+      if (form && !data?.id && isOpen) {
         form.setFieldsValue({ job: selectedJobId });
       }
     }, [selectedJobId, form, isOpen]);
-
-    console.log(selectedJobId);
 
     return (
       <Modal
